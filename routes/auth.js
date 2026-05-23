@@ -6,8 +6,11 @@ const authMw = require('../middleware/auth');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS }
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS },
+  family: 4
 });
 
 const SECRET = process.env.JWT_SECRET || 'plan_attaque_secret';
