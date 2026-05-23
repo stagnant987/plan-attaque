@@ -3,1215 +3,690 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PLAN D'ATTAQUE — Analyse. Décide. Agis.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Plan d'Attaque</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#080610;--bg2:#0d0a1a;--card:#110d1e;--card2:#160f26;
-  --border:#1e1535;--border2:#2d1f50;
-  --green:#a855f7;--green2:#c084fc;--blue:#7c3aed;--purple:#7c3aed;--purple2:#a855f7;
-  --red:#ff4466;--yellow:#ffd600;--orange:#ff8c00;
-  --text:#e5e0f5;--text2:#9070b8;--text3:#4d3080;
-  --sidebar-w:240px;--top-h:64px;--r:10px;
-  --sg:0 0 20px rgba(168,85,247,.25);--sb:0 0 20px rgba(124,58,237,.2);--sp:0 0 20px rgba(168,85,247,.3);
+  --bg:#0a0a12;--card:#13111f;--card2:#1a1630;
+  --border:#252040;--purple:#a855f7;--purple2:#7c3aed;
+  --green:#22c55e;--red:#ef4444;--yellow:#eab308;--blue:#3b82f6;
+  --text:#f0ecff;--text2:#9985c8;--text3:#4d3d80;
+  --r:16px;--shadow:0 4px 24px rgba(168,85,247,.15);
 }
-html,body{height:100%;font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);font-size:15px;overflow:hidden}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:16px}
 
-/* ── Auth ─────────────────────────────────────────────────────────────── */
-#auth-screen{position:fixed;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(124,58,237,.07),transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(124,58,237,.07),transparent 60%),var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
-.auth-box{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:44px 40px;width:380px;max-width:95vw}
-.auth-logo{text-align:center;margin-bottom:28px}
-.auth-logo .logo-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--green),var(--blue));clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;font-weight:900}
-.auth-logo h1{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(90deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.auth-logo p{font-size:11px;color:var(--text2);letter-spacing:2px;margin-top:3px}
-.auth-tabs{display:flex;background:var(--bg2);border-radius:8px;padding:3px;margin-bottom:22px;gap:3px}
-.auth-tab{flex:1;background:none;border:none;color:var(--text2);padding:7px;border-radius:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;transition:all .2s}
-.auth-tab.active{background:linear-gradient(135deg,var(--green),var(--blue));color:#fff}
-.fi{width:100%;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;outline:none;font-family:'Rajdhani',sans-serif;transition:border-color .2s;margin-bottom:10px}
-.fi:focus{border-color:var(--green)}
-.fi::placeholder{color:var(--text3)}
-.auth-btn{width:100%;background:linear-gradient(135deg,var(--green),var(--blue));border:none;color:#fff;padding:12px;border-radius:8px;font-family:'Orbitron',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;cursor:pointer;margin-top:4px;transition:opacity .2s}
-.auth-btn:hover{opacity:.9}
-.auth-err{color:var(--red);font-size:12px;margin-bottom:8px;text-align:center}
-.auth-warn{background:rgba(255,214,0,.07);border:1px solid rgba(255,214,0,.2);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--yellow);margin-top:14px;line-height:1.6}
+/* ── AUTH ── */
+#auth{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(124,58,237,.08),transparent 70%),var(--bg);z-index:100;padding:20px}
+.auth-box{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px 36px;width:100%;max-width:400px;box-shadow:var(--shadow)}
+.auth-logo{text-align:center;margin-bottom:32px}
+.auth-logo .icon{width:72px;height:72px;background:linear-gradient(135deg,var(--purple),var(--purple2));border-radius:20px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.auth-logo h1{font-size:26px;font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.auth-logo p{font-size:14px;color:var(--text2);margin-top:6px}
+.tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:24px;gap:4px}
+.tab{flex:1;background:none;border:none;color:var(--text2);padding:10px;border-radius:9px;cursor:pointer;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;transition:all .2s}
+.tab.active{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff}
+.inp{width:100%;background:var(--bg);border:2px solid var(--border);color:var(--text);padding:14px 16px;border-radius:12px;font-size:16px;outline:none;font-family:'Inter',sans-serif;transition:border-color .2s;margin-bottom:12px}
+.inp:focus{border-color:var(--purple)}
+.inp::placeholder{color:var(--text3)}
+.btn-main{width:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));border:none;color:#fff;padding:16px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity .2s;font-family:'Inter',sans-serif}
+.btn-main:hover{opacity:.9}
+.btn-main:disabled{opacity:.5;cursor:not-allowed}
+.err{color:var(--red);font-size:14px;margin-bottom:10px;text-align:center;font-weight:600}
 
-/* ── App Layout ──────────────────────────────────────────────────────── */
-#app{display:none;grid-template-columns:var(--sidebar-w) 1fr;grid-template-rows:var(--top-h) 1fr;height:100vh}
-#app.show{display:grid}
+/* ── APP ── */
+#app{display:none;flex-direction:column;height:100vh}
+#app.show{display:flex}
 
-/* ── Topbar ─────────────────────────────────────────────────────────── */
-.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;z-index:50}
-.tb-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.tb-diamond{width:30px;height:30px;background:linear-gradient(135deg,var(--green),var(--blue));clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);flex-shrink:0}
-.tb-name{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,var(--green),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.tb-slogan{font-size:10px;color:var(--text3);letter-spacing:2px;display:none}
-.tb-scan{flex:1;display:flex;justify-content:center;gap:24px}
-.scan-pill{display:flex;align-items:center;gap:8px;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:50px;padding:5px 18px;font-size:12px}
-.scan-pill .lbl{color:var(--text2);font-size:10px;letter-spacing:1px}
-.scan-pill .val{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--green)}
-.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.tb-user{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;cursor:pointer}
-.tb-user span{font-size:12px;color:var(--text2)}
-.tb-avatar{width:28px;height:28px;background:linear-gradient(135deg,var(--purple),var(--blue));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
-.btn-ic{background:var(--card2);border:1px solid var(--border);border-radius:7px;color:var(--text2);width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
-.btn-ic:hover{border-color:var(--green);color:var(--green)}
-.warn-badge{background:rgba(255,68,102,.12);border:1px solid rgba(255,68,102,.3);border-radius:50px;padding:3px 10px;font-size:10px;color:var(--red);letter-spacing:1px}
+/* Topbar */
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--purple),var(--purple2));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.tb-title{font-size:18px;font-weight:800;background:linear-gradient(90deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-user{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer}
+.btn-logout{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px}
+.btn-logout:hover{color:var(--red)}
 
-/* ── Sidebar ─────────────────────────────────────────────────────────── */
-.sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:12px 0;overflow-y:auto}
-.nav-lbl{font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:8px 14px 3px}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .2s;margin:1px 8px;border-radius:7px;border:1px solid transparent}
-.nav-item i{width:16px;text-align:center;font-size:13px;flex-shrink:0}
-.nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
-.nav-item.active{background:rgba(168,85,247,.08);color:var(--green);border-color:rgba(168,85,247,.2)}
-.nav-item.active i{text-shadow:0 0 10px var(--green)}
-.sidebar-foot{margin-top:auto;padding:10px 8px;border-top:1px solid var(--border)}
-.sim-badge{background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.25);border-radius:50px;padding:2px 8px;font-size:9px;color:var(--yellow);letter-spacing:1px;margin-left:auto}
+/* Content */
+.content{flex:1;overflow-y:auto;padding:20px}
 
-/* ── Main ───────────────────────────────────────────────────────────── */
-.main{overflow-y:auto;background:var(--bg);padding:22px}
+/* Bottom nav */
+.bottom-nav{background:var(--card);border-top:1px solid var(--border);display:flex;flex-shrink:0}
+.nav-btn{flex:1;background:none;border:none;color:var(--text3);padding:12px 4px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;font-family:'Inter',sans-serif;transition:color .2s}
+.nav-btn i{font-size:22px}
+.nav-btn.active{color:var(--purple)}
+
+/* Pages */
 .page{display:none}.page.active{display:block}
-.page-title{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.page-title i{color:var(--green)}
-.disclaimer{background:rgba(255,214,0,.06);border:1px solid rgba(255,214,0,.2);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--yellow);margin-bottom:18px;line-height:1.6;display:flex;gap:8px;align-items:flex-start}
 
-/* ── Grids ──────────────────────────────────────────────────────────── */
-.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+/* ── HOME ── */
+.welcome{text-align:center;padding:20px 0 32px}
+.welcome h2{font-size:24px;font-weight:800;margin-bottom:8px}
+.welcome p{color:var(--text2);font-size:16px}
+.modules{display:grid;grid-template-columns:1fr;gap:16px}
+.module-card{background:var(--card);border:2px solid var(--border);border-radius:var(--r);padding:28px 24px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:20px}
+.module-card:hover{border-color:var(--purple);box-shadow:var(--shadow);transform:translateY(-2px)}
+.module-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.icon-purple{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(124,58,237,.2));border:1px solid rgba(168,85,247,.3)}
+.icon-blue{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(37,99,235,.2));border:1px solid rgba(59,130,246,.3)}
+.icon-green{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(21,128,61,.2));border:1px solid rgba(34,197,94,.3)}
+.icon-yellow{background:linear-gradient(135deg,rgba(234,179,8,.2),rgba(161,98,7,.2));border:1px solid rgba(234,179,8,.3)}
+.module-info h3{font-size:19px;font-weight:800;margin-bottom:6px}
+.module-info p{font-size:14px;color:var(--text2);line-height:1.5}
+.module-arrow{margin-left:auto;color:var(--text3);font-size:20px;flex-shrink:0}
 
-/* ── Cards ──────────────────────────────────────────────────────────── */
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;transition:border-color .2s,box-shadow .2s}
-.card:hover{border-color:var(--border2)}
-.card.cg:hover{border-color:rgba(168,85,247,.3);box-shadow:var(--sg)}
-.card.cb:hover{border-color:rgba(124,58,237,.3);box-shadow:var(--sb)}
-.card.cp:hover{border-color:rgba(124,58,237,.3);box-shadow:var(--sp)}
-.card.cr:hover{border-color:rgba(255,68,102,.3)}
-.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.ct{font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase}
-.sv{font-family:'Orbitron',sans-serif;font-size:26px;font-weight:700}
-.sv.green{color:var(--green);text-shadow:0 0 20px rgba(168,85,247,.4)}
-.sv.blue{color:var(--blue);text-shadow:0 0 20px rgba(124,58,237,.4)}
-.sv.purple{color:var(--purple2);text-shadow:0 0 20px rgba(168,85,247,.4)}
-.sv.red{color:var(--red)}
-.ss{font-size:12px;color:var(--text2);margin-top:3px}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:50px;font-size:10px;font-weight:700;letter-spacing:1px}
-.bg{background:rgba(168,85,247,.12);color:var(--green)}
-.br{background:rgba(255,68,102,.12);color:var(--red)}
-.by{background:rgba(255,214,0,.1);color:var(--yellow)}
-.bp{background:rgba(168,85,247,.12);color:var(--purple2)}
-.bb{background:rgba(124,58,237,.1);color:var(--blue)}
+/* ── RECOVERY ── */
+.page-header{margin-bottom:24px}
+.page-header h2{font-size:22px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.page-header p{color:var(--text2);font-size:15px;line-height:1.6}
+.big-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px}
+.big-card h3{font-size:17px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.textarea{width:100%;background:var(--bg);border:2px solid var(--border);color:var(--text);padding:16px;border-radius:12px;font-size:15px;font-family:'Inter',sans-serif;resize:vertical;min-height:120px;outline:none;transition:border-color .2s}
+.textarea:focus{border-color:var(--purple)}
+.textarea::placeholder{color:var(--text3)}
+.hint-text{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.6}
+.btn-action{background:linear-gradient(135deg,var(--purple),var(--purple2));border:none;color:#fff;padding:15px 24px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-top:14px;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s}
+.btn-action:hover{opacity:.9}
+.btn-action:disabled{opacity:.5;cursor:not-allowed}
+.btn-action.blue{background:linear-gradient(135deg,var(--blue),#1d4ed8)}
+.btn-action.green{background:linear-gradient(135deg,var(--green),#15803d)}
+.results-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.result-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.result-num{color:var(--purple);font-weight:700;font-size:14px;flex-shrink:0;width:28px}
+.result-val{font-size:15px;font-weight:600;font-family:monospace;word-break:break-all;flex:1}
+.copy-btn{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);color:var(--purple);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;font-family:'Inter',sans-serif}
+.copy-btn:hover{background:rgba(168,85,247,.25)}
+.conseil-box{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-radius:12px;padding:16px;margin-top:16px;font-size:15px;line-height:1.6;color:var(--text)}
+.conseil-box i{color:var(--purple);margin-right:8px}
+.info-box{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);border-radius:12px;padding:16px;font-size:14px;color:#fbbf24;line-height:1.6}
+.info-box i{margin-right:8px}
 
-/* ── Buttons ─────────────────────────────────────────────────────────── */
-.btn{background:var(--card2);border:1px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:7px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
-.btn:hover{border-color:var(--green);color:var(--green)}
-.btn.primary{background:linear-gradient(135deg,var(--green),var(--blue));border:none;color:#fff;font-weight:700}
-.btn.primary:hover{opacity:.9}
-.btn.danger{border-color:var(--red);color:var(--red)}
-.btn.danger:hover{background:rgba(255,68,102,.1)}
-.btn.full{width:100%;justify-content:center}
-.btn.sm{padding:4px 10px;font-size:11px}
+/* ── MARCHÉS ── */
+.market-tabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+.market-tab{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:9px 18px;border-radius:50px;cursor:pointer;font-size:14px;font-weight:600;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .2s}
+.market-tab.active{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;border-color:transparent}
+.market-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.market-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.mi-left{display:flex;align-items:center;gap:14px}
+.mi-badge{width:44px;height:44px;border-radius:12px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:var(--purple)}
+.mi-name{font-size:15px;font-weight:700}
+.mi-sector{font-size:12px;color:var(--text2);margin-top:2px}
+.mi-right{text-align:right}
+.mi-price{font-size:16px;font-weight:800}
+.mi-change{font-size:13px;font-weight:600;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}
+.plan-btn{background:linear-gradient(135deg,var(--purple),var(--blue));border:none;color:#fff;padding:18px 24px;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;width:100%;margin-bottom:20px;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .2s}
+.plan-btn:hover{opacity:.9}
+.plan-result{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px;white-space:pre-wrap;font-size:15px;line-height:1.8;display:none}
 
-/* ── Forms ──────────────────────────────────────────────────────────── */
-.frow{margin-bottom:12px}
-.fl{font-size:10px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px}
-.fsel{width:100%;background:var(--card2);border:1px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:7px;font-size:13px;outline:none;font-family:'Rajdhani',sans-serif}
-.fsel:focus{border-color:var(--green)}
+/* ── PORTEFEUILLE ── */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.stat-label{font-size:12px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.stat-val{font-size:24px;font-weight:900}
+.stat-val.purple{color:var(--purple)}
+.stat-val.green{color:var(--green)}
+.stat-val.red{color:var(--red)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lbl{font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text2)}
+.select{width:100%;background:var(--bg);border:2px solid var(--border);color:var(--text);padding:13px 14px;border-radius:12px;font-size:15px;outline:none;font-family:'Inter',sans-serif;appearance:none}
+.select:focus{border-color:var(--purple)}
+.positions-list{display:flex;flex-direction:column;gap:10px}
+.pos-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
+.pos-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pos-asset{font-size:17px;font-weight:800}
+.pos-type{background:rgba(168,85,247,.15);color:var(--purple);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:700}
+.pos-details{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pos-detail{font-size:12px;color:var(--text2);font-weight:600}
+.pos-detail span{display:block;font-size:15px;font-weight:700;color:var(--text);margin-top:2px}
+.pos-actions{display:flex;gap:8px;margin-top:14px}
+.btn-sm{flex:1;padding:10px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+.btn-success{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
 
-/* ── Table ──────────────────────────────────────────────────────────── */
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
-.tbl td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px}
-.tbl tr:hover td{background:rgba(255,255,255,.02)}
-.up{color:var(--green)}.dn{color:var(--red)}.nu{color:var(--text2)}
+/* ── IA ── */
+.chat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);height:calc(100vh - 320px);min-height:300px;overflow-y:auto;padding:20px;margin-bottom:16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:85%;padding:14px 16px;border-radius:16px;font-size:15px;line-height:1.6}
+.msg.user{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.ai{background:var(--card2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px;white-space:pre-wrap}
+.chat-input-row{display:flex;gap:10px}
+.chat-inp{flex:1;background:var(--card);border:2px solid var(--border);color:var(--text);padding:15px 18px;border-radius:14px;font-size:15px;outline:none;font-family:'Inter',sans-serif;transition:border-color .2s}
+.chat-inp:focus{border-color:var(--purple)}
+.chat-inp::placeholder{color:var(--text3)}
+.send-btn{background:linear-gradient(135deg,var(--purple),var(--purple2));border:none;color:#fff;width:52px;height:52px;border-radius:14px;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.quick-btns{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
+.quick-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:8px 16px;border-radius:50px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .2s}
+.quick-btn:hover{border-color:var(--purple);color:var(--purple)}
 
-/* ── Market Cards ────────────────────────────────────────────────────── */
-.mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:6px;transition:all .2s}
-.mcard:hover{border-color:var(--border2);transform:translateY(-1px)}
-.mc-sym{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
-.mc-name{font-size:11px;color:var(--text2)}
-.mc-price{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;margin-top:4px}
-.mc-chg{font-size:12px;font-weight:600}
-
-/* ── Opportunity Card ──────────────────────────────────────────────── */
-.opp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;transition:all .2s}
-.opp-card:hover{border-color:var(--border2);box-shadow:0 4px 20px rgba(0,0,0,.3)}
-.opp-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px}
-.opp-asset{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
-.opp-body{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px}
-.opp-stats{display:flex;gap:8px;flex-wrap:wrap}
-.opp-stat{display:flex;flex-direction:column;gap:2px}
-.opp-stat .lbl{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
-.opp-stat .val{font-size:12px;font-weight:600}
-.conf-bar{background:var(--border);border-radius:4px;height:4px;margin-top:8px}
-.conf-fill{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--yellow),var(--green))}
-
-/* ── Chat ──────────────────────────────────────────────────────────── */
-.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - var(--top-h) - 130px)}
-.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0}
-.msg{max-width:80%;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.6;white-space:pre-wrap}
-.msg.user{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);align-self:flex-end;color:var(--text)}
-.msg.ai{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.15);align-self:flex-start;color:var(--text)}
-.msg.ai .ai-label{font-size:10px;color:var(--green);letter-spacing:1px;margin-bottom:5px;display:flex;align-items:center;gap:6px}
-.chat-input{display:flex;gap:8px;background:var(--card2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r) var(--r);padding:10px}
-.chat-input input{flex:1;background:none;border:none;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;outline:none}
-.chat-input input::placeholder{color:var(--text3)}
-.chat-send{background:linear-gradient(135deg,var(--green),var(--blue));border:none;color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-
-/* ── Simulator ───────────────────────────────────────────────────────── */
-.sim-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px}
-.sim-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end}
-
-/* ── Toast ───────────────────────────────────────────────────────────── */
-#toast{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
-.toast{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text);display:flex;align-items:center;gap:8px;animation:slideIn .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.toast.ok{border-color:var(--green);color:var(--green)}
-.toast.err{border-color:var(--red);color:var(--red)}
-.toast.inf{border-color:var(--blue);color:var(--blue)}
-@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-
-/* ── Progress ─────────────────────────────────────────────────────────── */
-.prog-bar{background:var(--border);border-radius:50px;height:8px;overflow:hidden}
-.prog-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .5s}
-
-/* ── Modal ───────────────────────────────────────────────────────────── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:500}
-.modal-bg.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:24px;width:420px;max-width:95vw}
-.modal h3{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;color:var(--green);margin-bottom:16px}
-.modal-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-
-/* ── Home ──────────────────────────────────────────────────────────── */
-.home-hero{text-align:center;padding:50px 20px;background:radial-gradient(ellipse at 50% 100%,rgba(168,85,247,.06),transparent 70%)}
-.hero-diamond{width:80px;height:80px;background:linear-gradient(135deg,var(--green),var(--blue));clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);margin:0 auto 24px;position:relative}
-.hero-diamond::after{content:'⚡';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px}
-.hero-title{font-family:'Orbitron',sans-serif;font-size:36px;font-weight:900;letter-spacing:4px;background:linear-gradient(90deg,var(--green),var(--blue),var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
-.hero-slogan{font-size:14px;color:var(--text2);letter-spacing:4px;margin-bottom:36px}
-.home-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:30px}
-.feat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;transition:all .2s;cursor:pointer}
-.feat-card:hover{border-color:var(--green);box-shadow:var(--sg);transform:translateY(-2px)}
-.feat-card i{font-size:28px;margin-bottom:10px;display:block}
-.feat-card h3{font-size:13px;letter-spacing:1px;font-weight:700;margin-bottom:6px}
-.feat-card p{font-size:11px;color:var(--text2);line-height:1.6}
-.risk-banner{background:rgba(255,68,102,.06);border:1px solid rgba(255,68,102,.2);border-radius:var(--r);padding:16px 20px;margin-top:30px;font-size:12px;color:var(--text2);line-height:1.8;text-align:left}
-
-/* ── Scrollbar ─────────────────────────────────────────────────────────── */
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-
-/* ── Responsive ─────────────────────────────────────────────────────── */
-@media(max-width:768px){
-  #app.show{grid-template-columns:1fr;grid-template-rows:var(--top-h) 1fr auto}
-  .sidebar{display:none}
-  .g2,.g3,.g4{grid-template-columns:1fr}
-  .sim-grid{grid-template-columns:1fr}
-  .tb-scan{display:none}
-}
+/* Utils */
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text2);font-size:15px;padding:20px}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty i{font-size:48px;margin-bottom:12px;display:block}
+.empty p{font-size:15px}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;padding:12px 24px;border-radius:50px;font-weight:700;font-size:14px;z-index:999;animation:fadeInOut 2.5s forwards}
+@keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(10px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}85%{opacity:1}100%{opacity:0}}
 </style>
 </head>
 <body>
 
-<!-- ── AUTH SCREEN ─────────────────────────────────────────────────── -->
-<div id="auth-screen">
+<!-- AUTH -->
+<div id="auth">
   <div class="auth-box">
     <div class="auth-logo">
-      <div class="logo-icon">⚡</div>
+      <div class="icon">🎯</div>
       <h1>PLAN D'ATTAQUE</h1>
-      <p>ANALYSE · DÉCIDE · AGIS</p>
+      <p>Votre intelligence financière personnelle</p>
     </div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="authTab('login')">Connexion</button>
-      <button class="auth-tab" onclick="authTab('register')">Inscription</button>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login')">Se connecter</button>
+      <button class="tab" onclick="switchTab('register')">Créer un compte</button>
     </div>
-    <div id="auth-err" class="auth-err" style="display:none"></div>
-
-    <div id="form-login">
-      <input class="fi" id="l-email" type="email" placeholder="Adresse email">
-      <input class="fi" id="l-pass" type="password" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="auth-btn" onclick="doLogin()">SE CONNECTER</button>
+    <div id="auth-err" class="err" style="display:none"></div>
+    <div id="login-form">
+      <input class="inp" id="login-email" type="email" placeholder="Votre email">
+      <input class="inp" id="login-pass" type="password" placeholder="Votre mot de passe">
+      <button class="btn-main" onclick="login()">Se connecter →</button>
     </div>
-
-    <div id="form-register" style="display:none">
-      <input class="fi" id="r-user" placeholder="Nom d'utilisateur">
-      <input class="fi" id="r-email" type="email" placeholder="Adresse email">
-      <input class="fi" id="r-pass" type="password" placeholder="Mot de passe (min 6 caractères)" onkeydown="if(event.key==='Enter')doRegister()">
-      <button class="auth-btn" onclick="doRegister()">CRÉER MON COMPTE</button>
-    </div>
-
-    <div class="auth-warn">
-      <i class="fas fa-lock"></i> <strong>Accès sécurisé.</strong> Vos données sont chiffrées et protégées.
+    <div id="register-form" style="display:none">
+      <input class="inp" id="reg-user" type="text" placeholder="Votre prénom ou pseudo">
+      <input class="inp" id="reg-email" type="email" placeholder="Votre email">
+      <input class="inp" id="reg-pass" type="password" placeholder="Mot de passe (6 caractères min)">
+      <button class="btn-main" onclick="register()">Créer mon compte →</button>
     </div>
   </div>
 </div>
 
-<!-- ── APP ───────────────────────────────────────────────────────────── -->
+<!-- APP -->
 <div id="app">
   <!-- Topbar -->
   <div class="topbar">
-    <div class="tb-logo">
-      <div class="tb-diamond"></div>
-      <div>
-        <div class="tb-name">PLAN D'ATTAQUE</div>
-        <div class="tb-slogan">ANALYSE · DÉCIDE · AGIS</div>
-      </div>
-    </div>
-    <div class="tb-scan">
-      <div class="scan-pill" onclick="editBankBalance()" style="cursor:pointer" title="Modifier mon solde bancaire">
-        <i class="fas fa-piggy-bank" style="color:var(--green);font-size:13px"></i>
-        <span class="lbl">MON COMPTE</span>
-        <span class="val" id="tb-balance">–</span>
-        <i class="fas fa-pen" style="color:var(--text3);font-size:9px;margin-left:4px"></i>
-      </div>
+    <div class="tb-left">
+      <div class="tb-icon">🎯</div>
+      <div class="tb-title">Plan d'Attaque</div>
     </div>
     <div class="tb-right">
-      <div class="tb-user" onclick="navigate('profile')">
-        <div class="tb-avatar" id="tb-avatar">?</div>
-        <span id="tb-username">–</span>
-      </div>
-      <button class="btn-ic" onclick="doLogout()" title="Déconnexion"><i class="fas fa-sign-out-alt"></i></button>
+      <div class="tb-user" id="tb-username">Utilisateur</div>
+      <button class="btn-logout" onclick="logout()" title="Se déconnecter"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </div>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="nav-lbl">Navigation</div>
-    <div class="nav-item active" data-page="home" onclick="navigate('home')"><i class="fas fa-home" style="color:var(--green)"></i> Accueil</div>
-    <div class="nav-item" data-page="dashboard" onclick="navigate('dashboard')"><i class="fas fa-tachometer-alt" style="color:var(--blue)"></i> Dashboard</div>
+  <!-- Content -->
+  <div class="content">
 
-    <div class="nav-lbl">Marchés</div>
-    <div class="nav-item" data-page="stocks" onclick="navigate('stocks')"><i class="fas fa-chart-line" style="color:var(--green)"></i> Bourse</div>
-    <div class="nav-item" data-page="crypto" onclick="navigate('crypto')"><i class="fab fa-bitcoin" style="color:var(--yellow)"></i> Cryptomonnaies</div>
-    <div class="nav-item" data-page="forex" onclick="navigate('forex')"><i class="fas fa-exchange-alt" style="color:var(--blue)"></i> Devises (Forex)</div>
-    <div class="nav-item" data-page="indices" onclick="navigate('indices')"><i class="fas fa-globe" style="color:var(--purple2)"></i> Indices Mondiaux</div>
-
-    <div class="nav-lbl">Stratégie</div>
-    <div class="nav-item" data-page="opportunities" onclick="navigate('opportunities')"><i class="fas fa-crosshairs" style="color:var(--green)"></i> Opportunités</div>
-    <div class="nav-item" data-page="ai" onclick="navigate('ai')"><i class="fas fa-robot" style="color:var(--purple2)"></i> Assistant IA</div>
-    <div class="nav-item" data-page="simulator" onclick="navigate('simulator')"><i class="fas fa-flask" style="color:var(--yellow)"></i> Simulateur</div>
-
-    <div class="nav-lbl">Gestion</div>
-    <div class="nav-item" data-page="goals" onclick="navigate('goals')"><i class="fas fa-bullseye" style="color:var(--green)"></i> Objectifs</div>
-    <div class="nav-item" data-page="history" onclick="navigate('history')"><i class="fas fa-history" style="color:var(--text2)"></i> Historique</div>
-
-    <div class="nav-lbl">Compte</div>
-    <div class="nav-item" data-page="profile" onclick="navigate('profile')"><i class="fas fa-user"></i> Profil</div>
-    <div class="nav-item" data-page="settings" onclick="navigate('settings')"><i class="fas fa-cog"></i> Paramètres</div>
-    <div class="nav-item" data-page="risks" onclick="navigate('risks')"><i class="fas fa-exclamation-triangle" style="color:var(--red)"></i> Risques Financiers</div>
-
-    <div class="sidebar-foot">
-      <div style="font-size:10px;color:var(--text3);text-align:center;line-height:1.8">PLAN D'ATTAQUE v1.0</div>
-    </div>
-  </div>
-
-  <!-- Main -->
-  <div class="main">
-
-    <!-- ── HOME ─────────────────────────────────────────────────────── -->
+    <!-- ACCUEIL -->
     <div class="page active" id="page-home">
-      <div class="home-hero">
-        <div class="hero-diamond"></div>
-        <div class="hero-title">PLAN D'ATTAQUE</div>
-        <div class="hero-slogan">Analyse · Décide · Agis</div>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-          <button class="btn primary" style="padding:10px 24px;font-size:13px" onclick="navigate('dashboard')"><i class="fas fa-tachometer-alt"></i> Ouvrir le Dashboard</button>
-          <button class="btn" style="padding:10px 24px;font-size:13px" onclick="navigate('opportunities')"><i class="fas fa-crosshairs"></i> Voir les Opportunités</button>
-        </div>
+      <div class="welcome">
+        <h2>Bonjour 👋</h2>
+        <p>Que voulez-vous faire aujourd'hui ?</p>
       </div>
-      <div class="home-features">
-        <div class="feat-card" onclick="navigate('stocks')"><i class="fas fa-chart-line" style="color:var(--green)"></i><h3>BOURSE</h3><p>Suivez les actions mondiales — Apple, NVIDIA, LVMH et plus</p></div>
-        <div class="feat-card" onclick="navigate('crypto')"><i class="fab fa-bitcoin" style="color:var(--yellow)"></i><h3>CRYPTO</h3><p>Bitcoin, Ethereum, Solana et toutes les cryptomonnaies</p></div>
-        <div class="feat-card" onclick="navigate('forex')"><i class="fas fa-exchange-alt" style="color:var(--blue)"></i><h3>DEVISES</h3><p>EUR/USD, GBP/USD, USD/JPY et les paires majeures</p></div>
-        <div class="feat-card" onclick="navigate('opportunities')"><i class="fas fa-crosshairs" style="color:var(--green)"></i><h3>OPPORTUNITÉS</h3><p>Idées stratégiques classées par risque et potentiel</p></div>
-        <div class="feat-card" onclick="navigate('ai')"><i class="fas fa-robot" style="color:var(--purple2)"></i><h3>ASSISTANT IA</h3><p>Analysez les marchés avec votre conseiller IA intégré</p></div>
-        <div class="feat-card" onclick="navigate('simulator')"><i class="fas fa-flask" style="color:var(--yellow)"></i><h3>SIMULATEUR</h3><p>Simulez vos trades et analysez vos performances</p></div>
-        <div class="feat-card" onclick="navigate('goals')"><i class="fas fa-bullseye" style="color:var(--green)"></i><h3>OBJECTIFS</h3><p>Définissez et suivez vos objectifs financiers</p></div>
-        <div class="feat-card" onclick="navigate('risks')"><i class="fas fa-shield-alt" style="color:var(--red)"></i><h3>RISQUES</h3><p>Comprendre les risques avant d'agir sur les marchés</p></div>
-      </div>
-    </div>
-
-    <!-- ── DASHBOARD ──────────────────────────────────────────────────── -->
-    <div class="page" id="page-dashboard">
-      <div class="page-title"><i class="fas fa-tachometer-alt"></i> DASHBOARD</div>
-      <div class="card cg" style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;padding:20px 24px">
-        <div>
-          <div class="ct" style="margin-bottom:6px"><i class="fas fa-piggy-bank" style="margin-right:6px"></i>MON COMPTE BANCAIRE</div>
-          <div class="sv green" id="db-balance">–</div>
-          <div class="ss" style="margin-top:4px">Mis à jour manuellement</div>
+      <div class="modules">
+        <div class="module-card" onclick="goPage('recovery')">
+          <div class="module-icon icon-purple">🔑</div>
+          <div class="module-info">
+            <h3>Récupérer mon Wallet</h3>
+            <p>L'IA génère des combinaisons pour retrouver votre mot de passe crypto perdu</p>
+          </div>
+          <i class="fas fa-chevron-right module-arrow"></i>
         </div>
-        <button class="btn" onclick="editBankBalance()" style="flex-shrink:0"><i class="fas fa-pen"></i> Modifier</button>
-      </div>
-      <div class="g2" style="margin-bottom:16px">
-        <div class="card">
-          <div class="ch"><span class="ct">Évolution du Portefeuille</span><span class="badge bb">Simulé</span></div>
-          <canvas id="chart-portfolio" height="120"></canvas>
+        <div class="module-card" onclick="goPage('marches')">
+          <div class="module-icon icon-blue">📊</div>
+          <div class="module-info">
+            <h3>Marchés & Stratégie</h3>
+            <p>Prix en temps réel + votre Plan d'Attaque du jour généré par l'IA</p>
+          </div>
+          <i class="fas fa-chevron-right module-arrow"></i>
         </div>
-        <div class="card">
-          <div class="ch"><span class="ct">Plan d'Action du Jour</span><button class="btn sm" onclick="loadDailyPlan()"><i class="fas fa-sync"></i> Générer</button></div>
-          <div id="db-plan" style="font-size:12px;color:var(--text2);line-height:1.8;white-space:pre-wrap;max-height:200px;overflow-y:auto">Cliquez sur "Générer" pour obtenir votre plan du jour.</div>
+        <div class="module-card" onclick="goPage('portefeuille')">
+          <div class="module-icon icon-green">💼</div>
+          <div class="module-info">
+            <h3>Mon Portefeuille</h3>
+            <p>Suivez vos investissements réels et calculez vos gains</p>
+          </div>
+          <i class="fas fa-chevron-right module-arrow"></i>
         </div>
-      </div>
-      <div class="g2">
-        <div class="card">
-          <div class="ch"><span class="ct">Marchés en direct (simulé)</span><span id="db-mkt-time" style="font-size:10px;color:var(--text3)"></span></div>
-          <div id="db-markets" class="ga" style="gap:8px"></div>
-        </div>
-        <div class="card">
-          <div class="ch"><span class="ct">Opportunités Top 3</span><button class="btn sm" onclick="navigate('opportunities')">Voir tout</button></div>
-          <div id="db-opps"></div>
+        <div class="module-card" onclick="goPage('ia')">
+          <div class="module-icon icon-yellow">🤖</div>
+          <div class="module-info">
+            <h3>Mon IA Personnelle</h3>
+            <p>Posez toutes vos questions financières, l'IA répond en français</p>
+          </div>
+          <i class="fas fa-chevron-right module-arrow"></i>
         </div>
       </div>
     </div>
 
-    <!-- ── STOCKS ─────────────────────────────────────────────────────── -->
-    <div class="page" id="page-stocks">
-      <div class="page-title"><i class="fas fa-chart-line"></i> BOURSE INTERNATIONALE</div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-        <button class="btn primary" onclick="loadStocks()"><i class="fas fa-sync"></i> Actualiser</button>
-        <input class="fi" id="stock-search" placeholder="Rechercher..." style="width:200px;margin-bottom:0" oninput="filterTable(this.value,'stocks-table')">
+    <!-- RÉCUPÉRATION -->
+    <div class="page" id="page-recovery">
+      <div class="page-header">
+        <h2>🔑 Récupérer mon Wallet</h2>
+        <p>Décrivez tout ce dont vous vous souvenez. L'IA va générer les combinaisons les plus probables de votre mot de passe.</p>
       </div>
-      <div class="card">
-        <table class="tbl" id="stocks-table">
-          <thead><tr><th>Symbole</th><th>Société</th><th>Secteur</th><th>Prix ($)</th><th>Variation</th><th>Volume</th></tr></thead>
-          <tbody id="stocks-body"></tbody>
-        </table>
+      <div class="info-box" style="margin-bottom:16px">
+        <i class="fas fa-shield-alt"></i>
+        <strong>Votre sécurité :</strong> Vos indices restent sur votre appareil et sont uniquement utilisés pour générer des suggestions. Utilisez uniquement pour vos propres wallets.
       </div>
-    </div>
-
-    <!-- ── CRYPTO ─────────────────────────────────────────────────────── -->
-    <div class="page" id="page-crypto">
-      <div class="page-title"><i class="fab fa-bitcoin"></i> CRYPTOMONNAIES</div>
-      <div style="display:flex;gap:8px;margin-bottom:16px">
-        <button class="btn primary" onclick="loadCrypto()"><i class="fas fa-sync"></i> Actualiser</button>
+      <div class="big-card">
+        <h3><i class="fas fa-lightbulb" style="color:var(--yellow)"></i> Ce dont je me souviens</h3>
+        <textarea class="textarea" id="recovery-hints" placeholder="Exemples :
+• Mon prénom est Mohamed, né en 1985
+• J'utilisais souvent le mot 'Bitcoin' ou 'crypto'
+• J'ajoutais parfois des chiffres comme 123 ou l'année
+• Ma ville est Paris
+• J'aimais les mots anglais simples
+• Mon mot de passe faisait environ 8 caractères..." rows="7"></textarea>
+        <p class="hint-text">💡 Plus vous donnez de détails, meilleures sont les suggestions de l'IA</p>
+        <button class="btn-action" id="recovery-btn" onclick="generateRecovery()">
+          <i class="fas fa-magic"></i> L'IA génère mes combinaisons
+        </button>
       </div>
-      <div class="card">
-        <table class="tbl">
-          <thead><tr><th>Symbol</th><th>Nom</th><th>Prix (USD)</th><th>Variation 24h</th><th>Volume 24h</th><th>Market Cap</th></tr></thead>
-          <tbody id="crypto-body"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ── FOREX ──────────────────────────────────────────────────────── -->
-    <div class="page" id="page-forex">
-      <div class="page-title"><i class="fas fa-exchange-alt"></i> DEVISES — FOREX</div>
-      <div class="ga" id="forex-grid"></div>
-    </div>
-
-    <!-- ── INDICES ─────────────────────────────────────────────────────── -->
-    <div class="page" id="page-indices">
-      <div class="page-title"><i class="fas fa-globe"></i> INDICES MONDIAUX</div>
-      <div class="ga" id="indices-grid"></div>
-    </div>
-
-    <!-- ── OPPORTUNITIES ───────────────────────────────────────────────── -->
-    <div class="page" id="page-opportunities">
-      <div class="page-title"><i class="fas fa-crosshairs"></i> OPPORTUNITÉS DÉTECTÉES</div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-        <button class="btn primary" onclick="loadOpportunities()"><i class="fas fa-sync"></i> Scanner</button>
-        <button class="btn" onclick="filterOpps('all')" id="obt-all">Tous</button>
-        <button class="btn" onclick="filterOpps('crypto')" id="obt-crypto">Crypto</button>
-        <button class="btn" onclick="filterOpps('stock')" id="obt-stock">Bourse</button>
-        <button class="btn" onclick="filterOpps('forex')" id="obt-forex">Forex</button>
-        <button class="btn" onclick="filterOpps('produit')" id="obt-produit">Produits</button>
-      </div>
-      <div class="ga" id="opps-grid"></div>
-    </div>
-
-    <!-- ── AI ASSISTANT ──────────────────────────────────────────────── -->
-    <div class="page" id="page-ai">
-      <div class="page-title"><i class="fas fa-robot"></i> ASSISTANT IA STRATÉGIQUE</div>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button class="btn" onclick="sendAIMsg('Génère mon plan d\'attaque du jour')"><i class="fas fa-calendar"></i> Plan du jour</button>
-        <button class="btn" onclick="sendAIMsg('Analyse Bitcoin')"><i class="fab fa-bitcoin"></i> Analyser BTC</button>
-        <button class="btn" onclick="sendAIMsg('Quels sont les risques à surveiller ?')"><i class="fas fa-shield-alt"></i> Risques</button>
-        <button class="btn" onclick="sendAIMsg('Analyse NVIDIA')"><i class="fas fa-microchip"></i> NVIDIA</button>
-        <button class="btn danger sm" onclick="clearChat()"><i class="fas fa-trash"></i> Effacer</button>
-      </div>
-      <div class="chat-wrap">
-        <div class="chat-msgs" id="chat-msgs">
-          <div class="msg ai"><div class="ai-label"><i class="fas fa-robot"></i> ASSISTANT IA</div>Bonjour ! Je suis votre assistant IA stratégique <strong>Plan d'Attaque</strong>.\n\nJe peux vous aider à :\n• Analyser les marchés (Bitcoin, NVIDIA, Forex...)\n• Générer votre plan d'action du jour\n• Identifier des opportunités\n• Gérer et comprendre les risques\n\nQue voulez-vous analyser aujourd'hui ?</div>
-        </div>
-        <div class="chat-input">
-          <input id="chat-in" placeholder="Posez votre question... (ex: Analyse Bitcoin, Plan du jour...)" onkeydown="if(event.key==='Enter')sendChat()">
-          <button class="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+      <div id="recovery-results" style="display:none">
+        <div class="big-card">
+          <h3><i class="fas fa-list" style="color:var(--green)"></i> Combinaisons suggérées</h3>
+          <div class="results-list" id="results-list"></div>
+          <div class="conseil-box" id="conseil-box"></div>
         </div>
       </div>
     </div>
 
-    <!-- ── SIMULATOR ──────────────────────────────────────────────────── -->
-    <div class="page" id="page-simulator">
-      <div class="page-title"><i class="fas fa-flask"></i> SIMULATEUR DE TRANSACTIONS</div>
+    <!-- MARCHÉS -->
+    <div class="page" id="page-marches">
+      <div class="page-header">
+        <h2>📊 Marchés & Stratégie</h2>
+        <p>Prix en direct et votre plan personnalisé</p>
+      </div>
+      <button class="plan-btn" onclick="getPlan()">
+        <i class="fas fa-bolt"></i> Générer mon Plan d'Attaque du Jour
+      </button>
+      <div class="plan-result" id="plan-result"></div>
+      <div class="market-tabs">
+        <button class="market-tab active" onclick="loadMarket('crypto')">🪙 Crypto</button>
+        <button class="market-tab" onclick="loadMarket('stocks')">📈 Actions</button>
+        <button class="market-tab" onclick="loadMarket('forex')">💱 Forex</button>
+      </div>
+      <div class="market-grid" id="market-grid">
+        <div class="loading"><div class="spinner"></div> Chargement...</div>
+      </div>
+    </div>
 
-      <div class="sim-form">
-        <div style="font-size:11px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">Nouvelle Simulation</div>
-        <div class="sim-grid">
-          <div class="frow">
-            <label class="fl">Type d'actif</label>
-            <select class="fsel" id="sim-type">
-              <option value="crypto">Crypto</option>
-              <option value="stock">Action</option>
-              <option value="forex">Forex</option>
-              <option value="produit">Produit</option>
+    <!-- PORTEFEUILLE -->
+    <div class="page" id="page-portefeuille">
+      <div class="page-header">
+        <h2>💼 Mon Portefeuille</h2>
+        <p>Suivez vos vrais investissements</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total investi</div>
+          <div class="stat-val purple" id="total-investi">0 €</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Résultat</div>
+          <div class="stat-val" id="total-pnl">0 €</div>
+        </div>
+      </div>
+      <div class="big-card" style="margin-bottom:16px">
+        <h3><i class="fas fa-plus-circle" style="color:var(--green)"></i> Ajouter un investissement</h3>
+        <div class="form-row" style="margin-bottom:10px">
+          <div>
+            <div class="lbl">Type</div>
+            <select class="select" id="pos-type">
+              <option>Crypto</option>
+              <option>Action</option>
+              <option>Forex</option>
+              <option>Autre</option>
             </select>
           </div>
-          <div class="frow">
-            <label class="fl">Actif / Produit</label>
-            <input class="fi" id="sim-asset" placeholder="ex: BTC, AAPL, EUR/USD" style="margin-bottom:0">
+          <div>
+            <div class="lbl">Actif (ex: BTC, AAPL)</div>
+            <input class="inp" id="pos-asset" placeholder="BTC, NVDA..." style="margin-bottom:0">
           </div>
-          <div class="frow">
-            <label class="fl">Action</label>
-            <select class="fsel" id="sim-action">
-              <option>Achat</option>
-              <option>Vente à découvert</option>
-            </select>
+        </div>
+        <div class="form-row" style="margin-bottom:10px">
+          <div>
+            <div class="lbl">Quantité</div>
+            <input class="inp" id="pos-qty" type="number" placeholder="0.5" style="margin-bottom:0">
           </div>
-          <div></div>
+          <div>
+            <div class="lbl">Prix d'achat (€)</div>
+            <input class="inp" id="pos-price" type="number" placeholder="30000" style="margin-bottom:0">
+          </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px">
-          <div class="frow"><label class="fl">Quantité</label><input class="fi" id="sim-qty" type="number" min="0.001" step="0.001" placeholder="1" style="margin-bottom:0"></div>
-          <div class="frow"><label class="fl">Prix d'entrée (€/$)</label><input class="fi" id="sim-price" type="number" min="0.01" step="0.01" placeholder="100.00" style="margin-bottom:0"></div>
-          <div class="frow"><label class="fl">Note</label><input class="fi" id="sim-note" placeholder="Stratégie..." style="margin-bottom:0"></div>
-        </div>
-        <div id="sim-cost-preview" style="font-size:12px;color:var(--text2);margin-top:10px"></div>
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button class="btn primary" onclick="createSim()"><i class="fas fa-plus"></i> Ouvrir la simulation</button>
-          <button class="btn" onclick="loadSims()"><i class="fas fa-sync"></i> Actualiser</button>
-        </div>
+        <button class="btn-action green" onclick="addPosition()">
+          <i class="fas fa-plus"></i> Ajouter à mon portefeuille
+        </button>
       </div>
-
-      <div style="display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap" id="sim-stats-row"></div>
-      <div class="card">
-        <div class="ch"><span class="ct">Simulations Ouvertes</span></div>
-        <table class="tbl">
-          <thead><tr><th>Actif</th><th>Action</th><th>Qté</th><th>Prix entrée</th><th>Coût total</th><th>P&L estimé</th><th>Actions</th></tr></thead>
-          <tbody id="sims-body"></tbody>
-        </table>
+      <div id="positions-container">
+        <div class="empty" id="empty-portfolio">
+          <i class="fas fa-wallet"></i>
+          <p>Aucun investissement encore.<br>Ajoutez vos actifs ci-dessus.</p>
+        </div>
+        <div class="positions-list" id="positions-list"></div>
       </div>
     </div>
 
-    <!-- ── GOALS ──────────────────────────────────────────────────────── -->
-    <div class="page" id="page-goals">
-      <div class="page-title"><i class="fas fa-bullseye"></i> OBJECTIFS FINANCIERS</div>
-      <div class="card" style="margin-bottom:16px">
-        <div style="font-size:11px;color:var(--text2);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">Nouvel Objectif</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end">
-          <div><label class="fl">Titre</label><input class="fi" id="g-title" placeholder="Ex: Épargne vacances" style="margin-bottom:0"></div>
-          <div><label class="fl">Objectif (€)</label><input class="fi" id="g-target" type="number" placeholder="1000" style="margin-bottom:0"></div>
-          <div><label class="fl">Catégorie</label><select class="fsel" id="g-cat"><option value="epargne">Épargne</option><option value="investissement">Investissement</option><option value="achat">Achat</option><option value="general">Général</option></select></div>
-          <div><label class="fl">Échéance</label><input class="fi" id="g-deadline" type="date" style="margin-bottom:0"></div>
-          <button class="btn primary" onclick="createGoal()"><i class="fas fa-plus"></i> Ajouter</button>
-        </div>
+    <!-- IA -->
+    <div class="page" id="page-ia">
+      <div class="page-header">
+        <h2>🤖 Mon IA Personnelle</h2>
+        <p>Posez vos questions en français, l'IA vous répond</p>
       </div>
-      <div id="goals-grid" class="ga"></div>
-    </div>
-
-    <!-- ── HISTORY ─────────────────────────────────────────────────────── -->
-    <div class="page" id="page-history">
-      <div class="page-title"><i class="fas fa-history"></i> HISTORIQUE DES SIMULATIONS</div>
-      <div class="card">
-        <table class="tbl">
-          <thead><tr><th>Date</th><th>Actif</th><th>Type</th><th>Action</th><th>Qté</th><th>Prix entrée</th><th>Prix sortie</th><th>P&L</th><th>Statut</th></tr></thead>
-          <tbody id="history-body"></tbody>
-        </table>
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="quickMsg('Analyse le Bitcoin')">🪙 Bitcoin</button>
+        <button class="quick-btn" onclick="quickMsg('Analyse NVIDIA')">💻 NVIDIA</button>
+        <button class="quick-btn" onclick="quickMsg('Comment gérer mon risque ?')">🛡️ Risque</button>
+        <button class="quick-btn" onclick="quickMsg('Quelles cryptos surveiller ?')">🔍 Cryptos</button>
+        <button class="quick-btn" onclick="quickMsg('Plan du jour')">📋 Plan du jour</button>
+      </div>
+      <div class="chat-box" id="chat-box">
+        <div class="msg ai">👋 Bonjour ! Je suis votre assistant IA financier. Posez-moi vos questions sur les marchés, les cryptos, la bourse, ou toute autre question financière. Je réponds en français !</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-inp" id="chat-inp" placeholder="Posez votre question..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="send-btn" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
       </div>
     </div>
 
-    <!-- ── PROFILE ─────────────────────────────────────────────────────── -->
-    <div class="page" id="page-profile">
-      <div class="page-title"><i class="fas fa-user"></i> PROFIL</div>
-      <div class="g2">
-        <div class="card" style="text-align:center;padding:30px">
-          <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--purple),var(--blue));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;margin:0 auto 16px" id="profile-avatar">?</div>
-          <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px" id="profile-name">–</div>
-          <div style="font-size:12px;color:var(--text2);margin-bottom:12px" id="profile-email">–</div>
-          <span class="badge bb" id="profile-plan">FREE</span>
-          <div style="margin-top:16px;font-size:11px;color:var(--text3)" id="profile-date">Membre depuis –</div>
-        </div>
-        <div>
-          <div class="card" style="margin-bottom:14px">
-            <div class="ch"><span class="ct">Statistiques</span></div>
-            <div class="g2" style="gap:10px" id="profile-stats"></div>
-          </div>
-          <div class="card">
-            <div class="ch"><span class="ct">Mon Compte Bancaire</span></div>
-            <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Saisir le solde réel de ton compte bancaire. Affiché dans la barre du haut.</p>
-            <button class="btn" onclick="editBankBalance()"><i class="fas fa-piggy-bank"></i> Mettre à jour le solde</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
 
-    <!-- ── SETTINGS ─────────────────────────────────────────────────────── -->
-    <div class="page" id="page-settings">
-      <div class="page-title"><i class="fas fa-cog"></i> PARAMÈTRES</div>
-      <div class="g2">
-        <div class="card">
-          <div class="ch"><span class="ct">Sécurité</span></div>
-          <div class="frow"><label class="fl">Mot de passe actuel</label><input type="password" class="fi" id="s-cur" style="margin-bottom:0"></div>
-          <div class="frow" style="margin-top:10px"><label class="fl">Nouveau mot de passe</label><input type="password" class="fi" id="s-new" style="margin-bottom:0"></div>
-          <div class="frow" style="margin-top:10px"><label class="fl">Confirmer</label><input type="password" class="fi" id="s-conf" style="margin-bottom:0"></div>
-          <button class="btn primary full" style="margin-top:12px" onclick="changePass()"><i class="fas fa-key"></i> Changer le mot de passe</button>
-        </div>
-        <div class="card">
-          <div class="ch"><span class="ct">À propos</span></div>
-          <p style="font-size:12px;color:var(--text2);line-height:1.9">
-            <strong style="color:var(--text)">PLAN D'ATTAQUE v1.0</strong><br>
-            Plateforme d'analyse financière<br>
-            Stack : Node.js · Express · SQLite<br>
-            Design : Interface Centre de Commandement<br><br>
-            <strong style="color:var(--green)">✅ Plateforme sécurisée</strong>
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── RISKS ──────────────────────────────────────────────────────── -->
-    <div class="page" id="page-risks">
-      <div class="page-title"><i class="fas fa-exclamation-triangle"></i> RISQUES ET RESPONSABILITÉS</div>
-      <div class="g2">
-        <div>
-          <div class="card cr" style="margin-bottom:14px">
-            <div class="ch"><span class="ct" style="color:var(--red)">Avertissement Principal</span><i class="fas fa-shield-alt" style="color:var(--red)"></i></div>
-            <p style="font-size:13px;line-height:1.9;color:var(--text2)">Les marchés financiers comportent des risques de perte en capital. Les performances passées ne préjugent pas des résultats futurs. Toute décision d'investissement reste sous votre entière responsabilité.</p>
-          </div>
-          <div class="card" style="margin-bottom:14px">
-            <div class="ch"><span class="ct">Risques par Catégorie</span></div>
-            <div style="display:flex;flex-direction:column;gap:12px">
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px">Cryptomonnaies</span><span class="badge br">Très Élevé</span></div><div class="prog-bar"><div class="prog-fill" style="width:95%;background:var(--red)"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px">Actions en bourse</span><span class="badge by">Élevé</span></div><div class="prog-bar"><div class="prog-fill" style="width:70%;background:var(--yellow)"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px">Forex</span><span class="badge by">Moyen-Élevé</span></div><div class="prog-bar"><div class="prog-fill" style="width:65%;background:var(--orange)"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px">Achat/Revente Produits</span><span class="badge bb">Modéré</span></div><div class="prog-bar"><div class="prog-fill" style="width:40%"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px">Obligations d'État</span><span class="badge bg">Faible</span></div><div class="prog-bar"><div class="prog-fill" style="width:20%"></div></div></div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="card" style="margin-bottom:14px">
-            <div class="ch"><span class="ct">Règles d'Or</span><i class="fas fa-star" style="color:var(--yellow)"></i></div>
-            <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--text2);line-height:1.7">
-              <div>✅ <strong style="color:var(--green)">Ne jamais investir plus que ce qu'on peut se permettre de perdre</strong></div>
-              <div>✅ <strong style="color:var(--green)">Diversifier ses positions</strong> — ne pas tout mettre sur un seul actif</div>
-              <div>✅ <strong style="color:var(--green)">Utiliser systématiquement un stop-loss</strong> pour limiter les pertes</div>
-              <div>✅ <strong style="color:var(--green)">Faire ses propres recherches</strong> (DYOR — Do Your Own Research)</div>
-              <div>✅ <strong style="color:var(--green)">Ne pas agir sous l'émotion</strong> — ni la peur, ni l'euphorie</div>
-              <div>✅ <strong style="color:var(--green)">Commencer petit</strong> — apprendre avant d'investir de grosses sommes</div>
-              <div>⛔ <strong style="color:var(--red)">Jamais de crédit pour investir</strong></div>
-              <div>⛔ <strong style="color:var(--red)">Jamais de décision impulsive</strong></div>
-              <div>⛔ <strong style="color:var(--red)">Méfiez-vous des promesses de gains garantis</strong></div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="ch"><span class="ct">Ressources Officielles</span></div>
-            <div style="font-size:12px;color:var(--text2);line-height:2">
-              🇫🇷 <strong style="color:var(--text)">AMF</strong> (Autorité des Marchés Financiers) — amf-france.org<br>
-              🇪🇺 <strong style="color:var(--text)">ESMA</strong> (Autorité Européenne des Marchés) — esma.europa.eu<br>
-              📚 <strong style="color:var(--text)">Investisseur Éclairé</strong> — Portail AMF pédagogique<br>
-              ⚠️ Vérifiez toujours que votre courtier est <strong>régulé et agréé</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /main -->
-</div><!-- /app -->
-
-<!-- ── MODAL FERMER SIMULATION ──────────────────────────────────────── -->
-<div class="modal-bg" id="modal-close-sim">
-  <div class="modal">
-    <h3><i class="fas fa-times-circle"></i> FERMER LA SIMULATION</h3>
-    <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Entrez le prix de sortie pour calculer votre P&L.</p>
-    <div class="frow"><label class="fl">Actif</label><div id="mc-asset" style="font-weight:700;color:var(--text)">–</div></div>
-    <div class="frow" style="margin-top:10px"><label class="fl">Prix de sortie (€/$)</label><input class="fi" id="mc-exit" type="number" step="0.01" style="margin-bottom:0"></div>
-    <div id="mc-preview" style="margin-top:10px;font-size:13px;font-weight:600"></div>
-    <div class="modal-foot">
-      <button class="btn" onclick="closeModal('modal-close-sim')">Annuler</button>
-      <button class="btn primary" onclick="confirmCloseSim()"><i class="fas fa-check"></i> Confirmer la fermeture</button>
-    </div>
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="goPage('home')">
+      <i class="fas fa-home"></i>Accueil
+    </button>
+    <button class="nav-btn" id="nav-recovery" onclick="goPage('recovery')">
+      <i class="fas fa-key"></i>Wallet
+    </button>
+    <button class="nav-btn" id="nav-marches" onclick="goPage('marches')">
+      <i class="fas fa-chart-line"></i>Marchés
+    </button>
+    <button class="nav-btn" id="nav-portefeuille" onclick="goPage('portefeuille')">
+      <i class="fas fa-wallet"></i>Portefeuille
+    </button>
+    <button class="nav-btn" id="nav-ia" onclick="goPage('ia')">
+      <i class="fas fa-robot"></i>Mon IA
+    </button>
   </div>
 </div>
 
-<!-- ── TOAST ─────────────────────────────────────────────────────────── -->
-<div id="toast"></div>
-
 <script>
-// ── State ──────────────────────────────────────────────────────────────────
+const API = '';
 let TOKEN = localStorage.getItem('pa_token');
-let USER = JSON.parse(localStorage.getItem('pa_user') || 'null');
-let _allOpps = [];
-let _closingSim = null;
-let _portfolioChart = null;
-let _refreshInterval = null;
+let USER = null;
+let positions = JSON.parse(localStorage.getItem('pa_positions') || '[]');
+let currentMarket = 'crypto';
 
-// ── Utils ──────────────────────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-const fmt = (n, dec=2) => n == null ? '–' : (n >= 1000 || n <= -1000) ? n.toLocaleString('fr-FR', {minimumFractionDigits:dec, maximumFractionDigits:dec}) : n.toFixed(dec);
-const fmtEur = n => (n >= 0 ? '+' : '') + fmt(n) + '€';
-const fmtUsd = n => '$' + fmt(n, n > 100 ? 2 : 4);
-
-function toast(msg, type='ok', dur=3500) {
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.innerHTML = `<i class="fas fa-${type==='ok'?'check-circle':type==='err'?'times-circle':'info-circle'}"></i> ${msg}`;
-  $('toast').appendChild(el);
-  setTimeout(() => el.remove(), dur);
-}
-
-async function api(path, opts={}) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (TOKEN) headers['Authorization'] = `Bearer ${TOKEN}`;
-  const r = await fetch('/api' + path, { ...opts, headers: { ...headers, ...(opts.headers||{}) } });
-  if (!r.ok) {
-    const e = await r.json().catch(() => ({ error: r.statusText }));
-    throw new Error(e.error || 'Erreur serveur');
-  }
-  return r.json();
-}
-
-// ── Auth ───────────────────────────────────────────────────────────────────
-function authTab(t) {
-  $('form-login').style.display = t === 'login' ? '' : 'none';
-  $('form-register').style.display = t === 'register' ? '' : 'none';
-  document.querySelectorAll('.auth-tab').forEach((b, i) => b.classList.toggle('active', (i===0&&t==='login')||(i===1&&t==='register')));
-  $('auth-err').style.display = 'none';
-}
-
-async function doLogin() {
-  const email = $('l-email').value.trim(), password = $('l-pass').value;
-  if (!email || !password) return showErr('Remplissez tous les champs');
-  try {
-    const data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-    onAuth(data);
-  } catch(e) { showErr(e.message); }
-}
-
-async function doRegister() {
-  const username = $('r-user').value.trim(), email = $('r-email').value.trim(), password = $('r-pass').value;
-  if (!username || !email || !password) return showErr('Remplissez tous les champs');
-  try {
-    const data = await api('/auth/register', { method: 'POST', body: JSON.stringify({ username, email, password }) });
-    onAuth(data);
-  } catch(e) { showErr(e.message); }
+// ── AUTH ─────────────────────────────────────────────────────────────────
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('active', (t==='login'&&i===0)||(t==='register'&&i===1)));
+  document.getElementById('login-form').style.display = t==='login'?'block':'none';
+  document.getElementById('register-form').style.display = t==='register'?'block':'none';
+  document.getElementById('auth-err').style.display = 'none';
 }
 
 function showErr(msg) {
-  $('auth-err').textContent = msg;
-  $('auth-err').style.display = 'block';
+  const e = document.getElementById('auth-err');
+  e.textContent = msg; e.style.display = 'block';
 }
 
-function onAuth(data) {
-  TOKEN = data.token;
-  USER = data.user;
+async function login() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-pass').value;
+  if (!email || !password) return showErr('Remplissez tous les champs');
+  const r = await fetch(`${API}/api/auth/login`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+  const d = await r.json();
+  if (!r.ok) return showErr(d.error || 'Erreur de connexion');
+  TOKEN = d.token; USER = d.user;
   localStorage.setItem('pa_token', TOKEN);
-  localStorage.setItem('pa_user', JSON.stringify(USER));
-  $('auth-screen').style.display = 'none';
-  $('app').classList.add('show');
-  initApp();
+  startApp();
 }
 
-function doLogout() {
-  TOKEN = null; USER = null;
+async function register() {
+  const username = document.getElementById('reg-user').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-pass').value;
+  if (!username || !email || !password) return showErr('Remplissez tous les champs');
+  const r = await fetch(`${API}/api/auth/register`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password})});
+  const d = await r.json();
+  if (!r.ok) return showErr(d.error || 'Erreur inscription');
+  TOKEN = d.token; USER = d.user;
+  localStorage.setItem('pa_token', TOKEN);
+  startApp();
+}
+
+function startApp() {
+  document.getElementById('auth').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('tb-username').textContent = USER?.username || 'Utilisateur';
+  loadMarket('crypto');
+  loadPositions();
+}
+
+function logout() {
   localStorage.removeItem('pa_token');
-  localStorage.removeItem('pa_user');
-  if (_refreshInterval) clearInterval(_refreshInterval);
-  $('app').classList.remove('show');
-  $('auth-screen').style.display = 'flex';
+  TOKEN = null; USER = null;
+  location.reload();
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
-function initApp() {
-  const initials = (USER?.username || 'U').substring(0, 2).toUpperCase();
-  $('tb-avatar').textContent = initials;
-  $('tb-username').textContent = USER?.username || '–';
-  api('/auth/me').then(u => updateBankBalance(u.bank_balance || 0)).catch(() => {});
-  navigate('dashboard');
-  _refreshInterval = setInterval(() => {
-    const active = document.querySelector('.page.active')?.id;
-    if (active === 'page-stocks') loadStocks();
-    if (active === 'page-crypto') loadCrypto();
-    if (active === 'page-forex') loadForex();
-    if (active === 'page-indices') loadIndices();
-  }, 30000);
-}
-
-// ── Navigation ─────────────────────────────────────────────────────────────
-const PAGE_LOADERS = {
-  dashboard:     loadDashboard,
-  stocks:        loadStocks,
-  crypto:        loadCrypto,
-  forex:         loadForex,
-  indices:       loadIndices,
-  opportunities: loadOpportunities,
-  simulator:     loadSims,
-  goals:         loadGoals,
-  history:       loadHistory,
-  profile:       loadProfile,
-  risks:         () => {},
-  home:          () => {},
-  ai:            loadAIHistory,
-  settings:      () => {},
-};
-
-function navigate(page) {
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+function goPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const el = $('page-' + page);
-  if (el) el.classList.add('active');
-  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
-  if (PAGE_LOADERS[page]) PAGE_LOADERS[page]();
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if (name==='marches') loadMarket(currentMarket);
 }
 
-// ── Dashboard ──────────────────────────────────────────────────────────────
-async function loadDashboard() {
+// ── RECOVERY ─────────────────────────────────────────────────────────────
+async function generateRecovery() {
+  const hints = document.getElementById('recovery-hints').value.trim();
+  if (hints.length < 10) return toast('Donnez plus de détails sur ce que vous vous souvenez', 'red');
+  const btn = document.getElementById('recovery-btn');
+  btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> L\'IA analyse vos indices...';
+  document.getElementById('recovery-results').style.display = 'none';
   try {
-    const [stats, opps, mkts] = await Promise.all([
-      api('/simulations/stats'),
-      api('/opportunities'),
-      api('/markets/stocks'),
-    ]);
-    const user = await api('/auth/me');
-    updateBankBalance(user.bank_balance || 0);
-    $('db-mkt-time').textContent = new Date().toLocaleTimeString('fr-FR');
-
-    // Mini market cards
-    const miniMarkets = mkts.slice(0, 6);
-    $('db-markets').innerHTML = miniMarkets.map(s => `
-      <div class="mcard">
-        <div class="mc-sym">${s.symbol}</div>
-        <div class="mc-price ${s.change >= 0 ? 'up' : 'dn'}">$${fmt(s.price)}</div>
-        <div class="mc-chg ${s.change >= 0 ? 'up' : 'dn'}">${s.change >= 0 ? '▲' : '▼'} ${Math.abs(s.change).toFixed(2)}%</div>
-      </div>`).join('');
-
-    // Top 3 opps
-    $('db-opps').innerHTML = opps.slice(0, 3).map(o => `
-      <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <div>
-          <div style="font-weight:700;font-size:13px">${o.asset}</div>
-          <div style="font-size:10px;color:var(--text2)">${o.type} · Risque: ${o.risk}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="badge ${o.risk==='Faible'?'bg':o.risk==='Moyen'?'bb':'br'}">${o.risk}</div>
-          <div style="font-size:11px;color:var(--green);margin-top:3px">${o.potential}</div>
-        </div>
-      </div>`).join('');
-
-    drawPortfolioChart(stats);
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-function drawPortfolioChart(stats) {
-  const ctx = $('chart-portfolio')?.getContext('2d');
-  if (!ctx) return;
-  if (_portfolioChart) _portfolioChart.destroy();
-  const base = 10000;
-  const current = stats.balance_sim;
-  const points = [base];
-  for (let i = 1; i < 7; i++) points.push(+(base + (current - base) * (i / 6) * (0.7 + Math.random() * 0.6)).toFixed(2));
-  points.push(current);
-  const labels = ['Départ', 'J+1', 'J+2', 'J+3', 'J+4', 'J+5', 'J+6', 'Actuel'];
-  _portfolioChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        data: points,
-        borderColor: current >= base ? '#00e676' : '#ff4466',
-        backgroundColor: current >= base ? 'rgba(168,85,247,.08)' : 'rgba(255,68,102,.08)',
-        tension: 0.4, fill: true, pointRadius: 3, pointBackgroundColor: current >= base ? '#00e676' : '#ff4466',
-      }]
-    },
-    options: {
-      responsive: true, plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: '#1a1a35' }, ticks: { color: '#8888b0', font: { size: 10 } } },
-        y: { grid: { color: '#1a1a35' }, ticks: { color: '#8888b0', font: { size: 10 }, callback: v => v.toLocaleString('fr-FR') + '€' } }
-      }
-    }
-  });
-}
-
-function updateBankBalance(bal) {
-  const str = fmt(bal) + '€';
-  $('tb-balance').textContent = str;
-  if ($('db-balance')) $('db-balance').textContent = str;
-}
-
-async function editBankBalance() {
-  const cur = $('tb-balance').textContent.replace(/[€\s]/g, '').replace(',', '.');
-  const input = prompt('Entrer le solde de ton compte bancaire (€) :', cur || '0');
-  if (input === null) return;
-  const val = parseFloat(input.replace(',', '.'));
-  if (isNaN(val)) return toast('Montant invalide', 'err');
-  try {
-    await api('/auth/bank-balance', { method: 'PUT', body: JSON.stringify({ amount: val }) });
-    updateBankBalance(val);
-    toast('Solde mis à jour', 'ok');
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-async function loadDailyPlan() {
-  $('db-plan').textContent = '⏳ Génération en cours...';
-  try {
-    const data = await api('/ai/plan', { method: 'POST' });
-    $('db-plan').textContent = data.plan;
-  } catch(e) { $('db-plan').textContent = 'Erreur: ' + e.message; }
-}
-
-// ── Markets ────────────────────────────────────────────────────────────────
-async function loadStocks() {
-  try {
-    const stocks = await api('/markets/stocks');
-    $('stocks-body').innerHTML = stocks.map(s => `
-      <tr>
-        <td><strong style="color:var(--text)">${s.symbol}</strong></td>
-        <td>${s.name}</td>
-        <td><span class="badge bp" style="font-size:9px">${s.sector}</span></td>
-        <td style="font-family:'Orbitron',sans-serif;font-size:12px">$${fmt(s.price)}</td>
-        <td class="${s.change >= 0 ? 'up' : 'dn'}">${s.change >= 0 ? '▲' : '▼'} ${Math.abs(s.change).toFixed(2)}%</td>
-        <td style="color:var(--text2)">${(s.volume / 1_000_000).toFixed(1)}M</td>
-      </tr>`).join('');
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-async function loadCrypto() {
-  try {
-    const cryptos = await api('/markets/crypto');
-    $('crypto-body').innerHTML = cryptos.map(c => `
-      <tr>
-        <td><strong style="color:var(--yellow);font-family:'Orbitron',sans-serif;font-size:12px">${c.symbol}</strong></td>
-        <td>${c.name}</td>
-        <td style="font-family:'Orbitron',sans-serif;font-size:12px">$${fmt(c.price, c.price < 1 ? 4 : 2)}</td>
-        <td class="${c.change >= 0 ? 'up' : 'dn'}">${c.change >= 0 ? '▲' : '▼'} ${Math.abs(c.change).toFixed(2)}%</td>
-        <td style="color:var(--text2)">${c.volume_24h}</td>
-        <td style="color:var(--text2)">${c.market_cap}</td>
-      </tr>`).join('');
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-async function loadForex() {
-  try {
-    const pairs = await api('/markets/forex');
-    $('forex-grid').innerHTML = pairs.map(f => `
-      <div class="mcard cb">
-        <div class="mc-sym" style="color:var(--blue)">${f.pair}</div>
-        <div class="mc-name">${f.name}</div>
-        <div class="mc-price ${f.change >= 0 ? 'up' : 'dn'}" style="font-size:22px">${fmt(f.rate, 4)}</div>
-        <div class="mc-chg ${f.change >= 0 ? 'up' : 'dn'}">${f.change >= 0 ? '▲' : '▼'} ${Math.abs(f.change).toFixed(4)}</div>
-      </div>`).join('');
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-async function loadIndices() {
-  try {
-    const indices = await api('/markets/indices');
-    $('indices-grid').innerHTML = indices.map(i => `
-      <div class="mcard ${i.change >= 0 ? 'cg' : 'cr'}">
-        <div class="mc-sym">${i.name}</div>
-        <div class="mc-name">${i.country}</div>
-        <div class="mc-price ${i.change >= 0 ? 'up' : 'dn'}" style="font-size:20px">${fmt(i.value)}</div>
-        <div class="mc-chg ${i.change >= 0 ? 'up' : 'dn'}">${i.change >= 0 ? '▲' : '▼'} ${Math.abs(i.change).toFixed(2)}%</div>
-      </div>`).join('');
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-function filterTable(q, tableId) {
-  const rows = document.querySelectorAll(`#${tableId} tbody tr`);
-  rows.forEach(r => r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none');
-}
-
-// ── Opportunities ──────────────────────────────────────────────────────────
-async function loadOpportunities() {
-  try {
-    _allOpps = await api('/opportunities');
-    renderOpps(_allOpps);
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-function filterOpps(type) {
-  document.querySelectorAll('[id^="obt-"]').forEach(b => b.classList.remove('primary'));
-  $('obt-' + type)?.classList.add('primary');
-  renderOpps(type === 'all' ? _allOpps : _allOpps.filter(o => o.type === type));
-}
-
-function renderOpps(opps) {
-  $('opps-grid').innerHTML = opps.map(o => `
-    <div class="opp-card">
-      <div class="opp-header">
-        <div>
-          <div style="font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px">${o.type} · ${o.sector}</div>
-          <div class="opp-asset">${o.asset}</div>
-        </div>
-        <span class="badge ${o.action.includes('Achat') ? 'bg' : 'br'}">${o.action}</span>
+    const r = await fetch(`${API}/api/recovery/generate`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+      body: JSON.stringify({hints})
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error);
+    const list = document.getElementById('results-list');
+    list.innerHTML = d.combinaisons.map((c,i) => `
+      <div class="result-item">
+        <span class="result-num">#${i+1}</span>
+        <span class="result-val">${c}</span>
+        <button class="copy-btn" onclick="copyText('${c.replace(/'/g,"\\'")}')">Copier</button>
       </div>
-      <div class="opp-body">${o.reason}</div>
-      <div class="opp-stats">
-        <div class="opp-stat"><span class="lbl">Risque</span><span class="val ${o.risk==='Faible'?'up':o.risk==='Moyen'?'nu':'dn'}">${o.risk}</span></div>
-        <div class="opp-stat"><span class="lbl">Potentiel</span><span class="val up">${o.potential}</span></div>
-        <div class="opp-stat"><span class="lbl">Confiance IA</span><span class="val">${o.confidence}%</span></div>
-      </div>
-      <div class="conf-bar" style="margin-top:10px"><div class="conf-fill" style="width:${o.confidence}%"></div></div>
-      <div style="font-size:10px;color:var(--text3);margin-top:8px">${o.disclaimer}</div>
-    </div>`).join('');
-}
-
-// ── AI Chat ────────────────────────────────────────────────────────────────
-async function loadAIHistory() {
-  try {
-    const history = await api('/ai/history');
-    if (history.length > 1) {
-      const msgs = $('chat-msgs');
-      msgs.innerHTML = '';
-      history.forEach(h => appendMsg(h.role, h.content));
-    }
-  } catch(e) {}
-}
-
-async function sendChat() {
-  const input = $('chat-in');
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
-  sendAIMsg(msg);
-}
-
-async function sendAIMsg(msg) {
-  navigate('ai');
-  appendMsg('user', msg);
-  const typing = appendMsg('ai', '⏳ Analyse en cours...');
-  try {
-    const data = await api('/ai/chat', { method: 'POST', body: JSON.stringify({ message: msg }) });
-    typing.querySelector('.msg-content').textContent = data.response;
+    `).join('');
+    document.getElementById('conseil-box').innerHTML = `<i class="fas fa-lightbulb"></i>${d.conseils || ''}`;
+    document.getElementById('recovery-results').style.display = 'block';
   } catch(e) {
-    typing.querySelector('.msg-content').textContent = '❌ ' + e.message;
+    toast('Erreur : ' + e.message, 'red');
   }
-  const msgs = $('chat-msgs');
-  msgs.scrollTop = msgs.scrollHeight;
+  btn.disabled = false; btn.innerHTML = '<i class="fas fa-magic"></i> Regénérer de nouvelles combinaisons';
 }
 
-function appendMsg(role, content) {
-  const msgs = $('chat-msgs');
-  const el = document.createElement('div');
-  el.className = `msg ${role}`;
-  el.innerHTML = role === 'ai'
-    ? `<div class="ai-label"><i class="fas fa-robot"></i> ASSISTANT IA</div><div class="msg-content">${content}</div>`
-    : `<div class="msg-content">${content}</div>`;
-  msgs.appendChild(el);
-  msgs.scrollTop = msgs.scrollHeight;
-  return el;
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => toast('Copié !'));
 }
 
-async function clearChat() {
-  if (!confirm('Effacer l\'historique ?')) return;
+// ── MARCHÉS ──────────────────────────────────────────────────────────────
+async function loadMarket(type) {
+  currentMarket = type;
+  document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.market-tab').forEach(t => { if(t.textContent.toLowerCase().includes(type==='stocks'?'action':type==='forex'?'forex':'crypto')) t.classList.add('active'); });
+  const grid = document.getElementById('market-grid');
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div> Chargement...</div>';
   try {
-    await api('/ai/history', { method: 'DELETE' });
-    $('chat-msgs').innerHTML = '<div class="msg ai"><div class="ai-label"><i class="fas fa-robot"></i> ASSISTANT IA</div><div class="msg-content">Historique effacé. Comment puis-je vous aider ?</div></div>';
-  } catch(e) { toast(e.message, 'err'); }
+    const r = await fetch(`${API}/api/markets/${type}`, {headers:{'Authorization':'Bearer '+TOKEN}});
+    const data = await r.json();
+    if (type==='crypto') {
+      grid.innerHTML = data.map(c => `
+        <div class="market-item">
+          <div class="mi-left">
+            <div class="mi-badge">${c.symbol.slice(0,4)}</div>
+            <div><div class="mi-name">${c.name}</div><div class="mi-sector">${c.market_cap||''}</div></div>
+          </div>
+          <div class="mi-right">
+            <div class="mi-price">${c.price.toLocaleString('fr-FR')} $</div>
+            <div class="mi-change ${c.change>=0?'up':'down'}">${c.change>=0?'+':''}${c.change}%</div>
+          </div>
+        </div>`).join('');
+    } else if (type==='stocks') {
+      grid.innerHTML = data.map(s => `
+        <div class="market-item">
+          <div class="mi-left">
+            <div class="mi-badge">${s.symbol.slice(0,4)}</div>
+            <div><div class="mi-name">${s.name}</div><div class="mi-sector">${s.sector||''}</div></div>
+          </div>
+          <div class="mi-right">
+            <div class="mi-price">${s.price.toLocaleString('fr-FR')} $</div>
+            <div class="mi-change ${s.change>=0?'up':'down'}">${s.change>=0?'+':''}${s.change}%</div>
+          </div>
+        </div>`).join('');
+    } else {
+      grid.innerHTML = data.map(f => `
+        <div class="market-item">
+          <div class="mi-left">
+            <div class="mi-badge" style="font-size:10px">${f.pair}</div>
+            <div><div class="mi-name">${f.pair}</div><div class="mi-sector">${f.name||''}</div></div>
+          </div>
+          <div class="mi-right">
+            <div class="mi-price">${f.rate}</div>
+            <div class="mi-change ${f.change>=0?'up':'down'}">${f.change>=0?'+':''}${f.change}</div>
+          </div>
+        </div>`).join('');
+    }
+  } catch(e) {
+    grid.innerHTML = '<div class="empty"><i class="fas fa-wifi"></i><p>Erreur de chargement</p></div>';
+  }
 }
 
-// ── Simulator ──────────────────────────────────────────────────────────────
-async function loadSims() {
+async function getPlan() {
+  const box = document.getElementById('plan-result');
+  box.style.display = 'block';
+  box.textContent = '⏳ L\'IA prépare votre plan personnalisé...';
   try {
-    const [sims, stats] = await Promise.all([api('/simulations'), api('/simulations/stats')]);
-    $('sim-stats-row').innerHTML = [
-      { lbl: 'P&L total', val: fmtEur(stats.totalPnl), color: stats.totalPnl >= 0 ? 'var(--green)' : 'var(--red)' },
-      { lbl: 'En cours', val: stats.open, color: 'var(--blue)' },
-      { lbl: 'Fermées', val: stats.closed, color: 'var(--text2)' },
-      { lbl: 'Win rate', val: stats.winrate + '%', color: 'var(--yellow)' },
-    ].map(s => `<div class="card" style="flex:1;min-width:110px;padding:12px"><div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">${s.lbl}</div><div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:${s.color}">${s.val}</div></div>`).join('');
-
-    const open = sims.filter(s => s.status === 'open');
-    $('sims-body').innerHTML = open.length ? open.map(s => {
-      const currentPrice = s.price_entry * (1 + (Math.random() - 0.48) * 0.08);
-      const pnlEst = s.action === 'Achat' ? (currentPrice - s.price_entry) * s.quantity : (s.price_entry - currentPrice) * s.quantity;
-      return `<tr>
-        <td><strong>${s.asset}</strong>${s.note ? `<div style="font-size:10px;color:var(--text3)">${s.note}</div>` : ''}</td>
-        <td><span class="badge ${s.action.includes('Achat')?'bg':'br'}">${s.action}</span></td>
-        <td>${fmt(s.quantity, 4)}</td>
-        <td style="font-family:'Orbitron',sans-serif;font-size:12px">${fmt(s.price_entry)}</td>
-        <td>${fmt(s.quantity * s.price_entry)}€</td>
-        <td class="${pnlEst >= 0 ? 'up' : 'dn'}">${fmtEur(pnlEst)}</td>
-        <td style="display:flex;gap:6px;align-items:center">
-          <button class="btn sm" onclick="openCloseSim(${s.id},'${s.asset}',${s.price_entry})"><i class="fas fa-times"></i> Fermer</button>
-          <button class="btn sm danger" onclick="deleteSim(${s.id})"><i class="fas fa-trash"></i></button>
-        </td>
-      </tr>`;
-    }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px">Aucune simulation ouverte</td></tr>';
-  } catch(e) { toast(e.message, 'err'); }
+    const r = await fetch(`${API}/api/ai/plan`, {method:'POST',headers:{'Authorization':'Bearer '+TOKEN}});
+    const d = await r.json();
+    box.textContent = d.plan;
+  } catch(e) {
+    box.textContent = 'Erreur lors de la génération du plan.';
+  }
 }
 
-async function createSim() {
-  const asset = $('sim-asset').value.trim(), action = $('sim-action').value;
-  const qty = parseFloat($('sim-qty').value), price = parseFloat($('sim-price').value);
-  const type = $('sim-type').value, note = $('sim-note').value;
-  if (!asset || !qty || !price) return toast('Remplissez tous les champs', 'err');
-  if (!confirm(`Confirmer le trade ?\n\n${action} de ${qty} × ${asset} à ${price}\nCoût: ${(qty*price).toFixed(2)}€`)) return;
+// ── PORTEFEUILLE ─────────────────────────────────────────────────────────
+function loadPositions() {
+  const list = document.getElementById('positions-list');
+  const empty = document.getElementById('empty-portfolio');
+  if (!positions.length) { empty.style.display='block'; list.innerHTML=''; updateStats(); return; }
+  empty.style.display = 'none';
+  list.innerHTML = positions.map((p,i) => `
+    <div class="pos-card">
+      <div class="pos-top">
+        <div class="pos-asset">${p.asset}</div>
+        <div class="pos-type">${p.type}</div>
+      </div>
+      <div class="pos-details">
+        <div class="pos-detail">Quantité<span>${p.qty}</span></div>
+        <div class="pos-detail">Prix d'achat<span>${p.price.toLocaleString('fr-FR')} €</span></div>
+        <div class="pos-detail">Total investi<span>${(p.qty*p.price).toLocaleString('fr-FR')} €</span></div>
+      </div>
+      <div class="pos-actions">
+        <button class="btn-sm btn-danger" onclick="removePosition(${i})"><i class="fas fa-trash"></i> Supprimer</button>
+      </div>
+    </div>`).join('');
+  updateStats();
+}
+
+function updateStats() {
+  const total = positions.reduce((s,p) => s + p.qty*p.price, 0);
+  document.getElementById('total-investi').textContent = total.toLocaleString('fr-FR') + ' €';
+  document.getElementById('total-pnl').textContent = '— €';
+  document.getElementById('total-pnl').className = 'stat-val';
+}
+
+function addPosition() {
+  const type = document.getElementById('pos-type').value;
+  const asset = document.getElementById('pos-asset').value.trim().toUpperCase();
+  const qty = parseFloat(document.getElementById('pos-qty').value);
+  const price = parseFloat(document.getElementById('pos-price').value);
+  if (!asset) return toast('Entrez le nom de l\'actif', 'red');
+  if (!qty || qty<=0) return toast('Entrez une quantité valide', 'red');
+  if (!price || price<=0) return toast('Entrez un prix d\'achat valide', 'red');
+  positions.push({type, asset, qty, price});
+  localStorage.setItem('pa_positions', JSON.stringify(positions));
+  document.getElementById('pos-asset').value='';
+  document.getElementById('pos-qty').value='';
+  document.getElementById('pos-price').value='';
+  loadPositions();
+  toast('Ajouté à votre portefeuille !');
+}
+
+function removePosition(i) {
+  positions.splice(i,1);
+  localStorage.setItem('pa_positions', JSON.stringify(positions));
+  loadPositions();
+  toast('Supprimé');
+}
+
+// ── IA CHAT ───────────────────────────────────────────────────────────────
+async function sendChat() {
+  const inp = document.getElementById('chat-inp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  addMsg(msg, 'user');
+  const typing = addMsg('...', 'ai');
   try {
-    await api('/simulations', { method: 'POST', body: JSON.stringify({ type, asset, action, quantity: qty, price_entry: price, note }) });
-    toast(`Trade ouvert : ${action} ${qty}× ${asset}`, 'ok');
-    $('sim-asset').value = ''; $('sim-qty').value = ''; $('sim-price').value = ''; $('sim-note').value = '';
-    loadSims();
-  } catch(e) { toast(e.message, 'err'); }
+    const r = await fetch(`${API}/api/ai/chat`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+      body: JSON.stringify({message: msg})
+    });
+    const d = await r.json();
+    typing.textContent = d.response;
+  } catch(e) {
+    typing.textContent = 'Erreur de connexion à l\'IA.';
+  }
 }
 
-['sim-qty','sim-price'].forEach(id => {
-  $(`${id}`)?.addEventListener('input', () => {
-    const qty = parseFloat($('sim-qty').value) || 0, price = parseFloat($('sim-price').value) || 0;
-    $('sim-cost-preview').textContent = qty && price ? `Coût total estimé : ${(qty * price).toFixed(2)}€` : '';
-  });
-});
-
-function openCloseSim(id, asset, entryPrice) {
-  _closingSim = { id, asset, entryPrice };
-  $('mc-asset').textContent = asset;
-  $('mc-exit').value = entryPrice;
-  $('mc-preview').textContent = '';
-  openModal('modal-close-sim');
+function quickMsg(msg) {
+  document.getElementById('chat-inp').value = msg;
+  sendChat();
 }
 
-$('mc-exit')?.addEventListener('input', () => {
-  if (!_closingSim) return;
-  const exit = parseFloat($('mc-exit').value);
-  if (!exit) return;
-  const pnl = (exit - _closingSim.entryPrice);
-  $('mc-preview').textContent = `P&L estimé par unité : ${pnl >= 0 ? '+' : ''}${pnl.toFixed(4)}`;
-  $('mc-preview').style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-});
-
-async function confirmCloseSim() {
-  if (!_closingSim) return;
-  const price_exit = parseFloat($('mc-exit').value);
-  if (!price_exit) return toast('Entrez un prix de sortie', 'err');
-  try {
-    const data = await api(`/simulations/${_closingSim.id}/close`, { method: 'PUT', body: JSON.stringify({ price_exit }) });
-    toast(`Fermé — P&L : ${fmtEur(data.pnl)}`, data.pnl >= 0 ? 'ok' : 'err');
-    closeModal('modal-close-sim');
-    loadSims();
-  } catch(e) { toast(e.message, 'err'); }
+function addMsg(text, role) {
+  const box = document.getElementById('chat-box');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
 }
 
-async function deleteSim(id) {
-  if (!confirm('Supprimer ce trade ?')) return;
-  try { await api(`/simulations/${id}`, { method: 'DELETE' }); toast('Trade supprimé', 'ok'); loadSims(); }
-  catch(e) { toast(e.message, 'err'); }
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function toast(msg, type='green') {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.style.background = type==='red'?'#ef4444':'#22c55e';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
 }
 
-// ── Goals ──────────────────────────────────────────────────────────────────
-async function loadGoals() {
-  try {
-    const goals = await api('/goals');
-    $('goals-grid').innerHTML = goals.length ? goals.map(g => {
-      const pct = Math.min(100, (g.current / g.target * 100).toFixed(1));
-      return `<div class="card cg">
-        <div class="ch"><div><div style="font-weight:700;margin-bottom:3px">${g.title}</div><div style="font-size:10px;color:var(--text3)">${g.category}${g.deadline ? ' · ' + g.deadline : ''}</div></div><button class="btn sm danger" onclick="deleteGoal(${g.id})"><i class="fas fa-trash"></i></button></div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;color:var(--text2)">Progression</span><span style="font-weight:700;color:var(--green)">${pct}%</span></div>
-        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
-        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px">
-          <span style="color:var(--text2)">${fmt(g.current)}€ / ${fmt(g.target)}€</span>
-          <span style="color:var(--text3)">${(g.target - g.current).toFixed(2)}€ restant</span>
-        </div>
-        <div style="margin-top:10px;display:flex;gap:6px">
-          <input class="fi" type="number" placeholder="Montant à ajouter" id="gadd-${g.id}" style="margin-bottom:0;font-size:12px">
-          <button class="btn sm primary" onclick="addGoalProgress(${g.id},${g.current},${g.target})"><i class="fas fa-plus"></i></button>
-        </div>
-      </div>`;
-    }).join('') : '<div style="color:var(--text3);text-align:center;padding:30px;width:100%">Aucun objectif défini — créez le premier !</div>';
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-async function createGoal() {
-  const title = $('g-title').value.trim(), target = parseFloat($('g-target').value);
-  const category = $('g-cat').value, deadline = $('g-deadline').value;
-  if (!title || !target) return toast('Remplissez le titre et l\'objectif', 'err');
-  try {
-    await api('/goals', { method: 'POST', body: JSON.stringify({ title, target, category, deadline }) });
-    toast('Objectif ajouté !', 'ok');
-    $('g-title').value = ''; $('g-target').value = '';
-    loadGoals();
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-async function addGoalProgress(id, current, target) {
-  const add = parseFloat($(`gadd-${id}`)?.value);
-  if (!add || add <= 0) return toast('Entrez un montant valide', 'err');
-  const newCurrent = Math.min(target, current + add);
-  try {
-    await api(`/goals/${id}`, { method: 'PUT', body: JSON.stringify({ current: newCurrent }) });
-    toast(`+${fmt(add)}€ ajouté à l'objectif !`, 'ok');
-    loadGoals();
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-async function deleteGoal(id) {
-  if (!confirm('Supprimer cet objectif ?')) return;
-  try { await api(`/goals/${id}`, { method: 'DELETE' }); toast('Objectif supprimé', 'ok'); loadGoals(); }
-  catch(e) { toast(e.message, 'err'); }
-}
-
-// ── History ─────────────────────────────────────────────────────────────────
-async function loadHistory() {
-  try {
-    const sims = await api('/simulations');
-    $('history-body').innerHTML = sims.map(s => `
-      <tr>
-        <td style="font-size:11px;color:var(--text2)">${s.created_at?.substring(0,10)}</td>
-        <td><strong>${s.asset}</strong></td>
-        <td><span class="badge bp" style="font-size:9px">${s.type}</span></td>
-        <td><span class="badge ${s.action.includes('Achat')?'bg':'br'}">${s.action}</span></td>
-        <td>${fmt(s.quantity, 4)}</td>
-        <td>$${fmt(s.price_entry)}</td>
-        <td>${s.price_exit ? '$' + fmt(s.price_exit) : '–'}</td>
-        <td class="${!s.pnl || s.pnl === 0 ? 'nu' : s.pnl > 0 ? 'up' : 'dn'}">${s.pnl ? fmtEur(s.pnl) : '–'}</td>
-        <td><span class="badge ${s.status==='open'?'bb':'bg'}">${s.status==='open'?'En cours':'Fermé'}</span></td>
-      </tr>`).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px">Aucun historique</td></tr>';
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-// ── Profile ──────────────────────────────────────────────────────────────────
-async function loadProfile() {
-  try {
-    const [user, stats] = await Promise.all([api('/auth/me'), api('/simulations/stats')]);
-    const initials = user.username.substring(0, 2).toUpperCase();
-    $('profile-avatar').textContent = initials;
-    $('profile-name').textContent = user.username;
-    $('profile-email').textContent = user.email;
-    $('profile-plan').textContent = user.plan?.toUpperCase() || 'FREE';
-    $('profile-date').textContent = `Membre depuis ${user.created_at?.substring(0, 10) || '–'}`;
-    $('profile-stats').innerHTML = [
-      { lbl: 'Compte bancaire', val: fmt(user.bank_balance || 0) + '€', color: 'var(--green)' },
-      { lbl: 'Simulations', val: stats.total, color: 'var(--blue)' },
-    ].map(s => `<div style="text-align:center;padding:12px"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">${s.lbl}</div><div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:${s.color}">${s.val}</div></div>`).join('');
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-
-// ── Settings ─────────────────────────────────────────────────────────────────
-async function changePass() {
-  const cur = $('s-cur').value, nw = $('s-new').value, conf = $('s-conf').value;
-  if (!cur || !nw || !conf) return toast('Remplissez tous les champs', 'err');
-  if (nw !== conf) return toast('Les mots de passe ne correspondent pas', 'err');
-  try {
-    await api('/auth/password', { method: 'PUT', body: JSON.stringify({ current: cur, next: nw }) });
-    toast('Mot de passe mis à jour', 'ok');
-    $('s-cur').value = ''; $('s-new').value = ''; $('s-conf').value = '';
-  } catch(e) { toast(e.message, 'err'); }
-}
-
-// ── Modals ─────────────────────────────────────────────────────────────────
-function openModal(id) { $(id).classList.add('open'); }
-function closeModal(id) { $(id).classList.remove('open'); }
-document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
-
-// ── Startup ────────────────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────────────────
 if (TOKEN) {
-  $('auth-screen').style.display = 'none';
-  $('app').classList.add('show');
-  initApp();
+  fetch(`${API}/api/auth/me`, {headers:{'Authorization':'Bearer '+TOKEN}})
+    .then(r => r.ok ? r.json() : null)
+    .then(u => { if(u){USER=u;startApp();}else{localStorage.removeItem('pa_token');} })
+    .catch(() => {});
 }
 </script>
 </body>

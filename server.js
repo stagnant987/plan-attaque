@@ -17,6 +17,7 @@ app.use('/api/opportunities', require('./routes/opportunities'));
 app.use('/api/simulations',   require('./routes/simulations'));
 app.use('/api/goals',         require('./routes/goals'));
 app.use('/api/ai',            require('./routes/ai'));
+app.use('/api/recovery',      require('./routes/recovery'));
 
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'frontend', 'index.html')));
 
