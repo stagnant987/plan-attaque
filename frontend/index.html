@@ -410,6 +410,33 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
       </div>
     </div>
 
+    <!-- PROFIL -->
+    <div class="page" id="page-profil">
+      <div class="page-header">
+        <h2>👤 Mon Profil</h2>
+        <p>Vos informations de compte</p>
+      </div>
+      <div class="big-card" style="text-align:center;margin-bottom:16px">
+        <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--purple),var(--purple2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px">👤</div>
+        <div style="font-size:22px;font-weight:900;margin-bottom:6px" id="profil-username">—</div>
+        <div style="color:var(--text2);font-size:15px" id="profil-email">—</div>
+        <div style="display:inline-block;background:rgba(168,85,247,.15);color:var(--purple);border-radius:20px;padding:4px 16px;font-size:13px;font-weight:700;margin-top:12px" id="profil-plan">FREE</div>
+      </div>
+      <div class="stats-row" style="margin-bottom:16px">
+        <div class="stat-card">
+          <div class="stat-label">Membre depuis</div>
+          <div style="font-size:16px;font-weight:700;margin-top:8px" id="profil-date">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Investissements</div>
+          <div style="font-size:16px;font-weight:700;margin-top:8px;color:var(--purple)" id="profil-nb-positions">0</div>
+        </div>
+      </div>
+      <button class="btn-action" style="background:linear-gradient(135deg,#ef4444,#b91c1c)" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+      </button>
+    </div>
+
     <!-- IA -->
     <div class="page" id="page-ia">
       <div class="page-header">
@@ -451,6 +478,9 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
     <button class="nav-btn" id="nav-ia" onclick="goPage('ia')">
       <i class="fas fa-robot"></i>Mon IA
     </button>
+    <button class="nav-btn" id="nav-profil" onclick="goPage('profil')">
+      <i class="fas fa-user"></i>Profil
+    </button>
   </div>
 </div>
 
@@ -458,7 +488,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 const API = '';
 let TOKEN = localStorage.getItem('pa_token');
 let USER = null;
-let positions = JSON.parse(localStorage.getItem('pa_positions') || '[]');
+let positions = [];
 let currentMarket = 'crypto';
 
 // ── AUTH ─────────────────────────────────────────────────────────────────
@@ -505,6 +535,18 @@ function startApp() {
   document.getElementById('tb-username').textContent = USER?.username || 'Utilisateur';
   loadMarket('crypto');
   loadPositions();
+  updateProfil();
+}
+
+function updateProfil() {
+  if (!USER) return;
+  document.getElementById('profil-username').textContent = USER.username || '—';
+  document.getElementById('profil-email').textContent = USER.email || '—';
+  document.getElementById('profil-plan').textContent = (USER.plan || 'free').toUpperCase();
+  if (USER.created_at) {
+    const d = new Date(USER.created_at);
+    document.getElementById('profil-date').textContent = d.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'});
+  }
 }
 
 function logout() {
@@ -520,6 +562,11 @@ function goPage(name) {
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
   if (name==='marches') loadMarket(currentMarket);
+  if (name==='portefeuille') loadPositions();
+  if (name==='profil') {
+    updateProfil();
+    document.getElementById('profil-nb-positions').textContent = positions.length;
+  }
 }
 
 // ── RECOVERY ─────────────────────────────────────────────────────────────
@@ -623,12 +670,18 @@ async function getPlan() {
 }
 
 // ── PORTEFEUILLE ─────────────────────────────────────────────────────────
-function loadPositions() {
+async function loadPositions() {
   const list = document.getElementById('positions-list');
   const empty = document.getElementById('empty-portfolio');
+  list.innerHTML = '<div class="loading"><div class="spinner"></div> Chargement...</div>';
+  try {
+    const r = await fetch(`${API}/api/portfolio`, {headers:{'Authorization':'Bearer '+TOKEN}});
+    positions = await r.json();
+  } catch(e) { positions = []; }
   if (!positions.length) { empty.style.display='block'; list.innerHTML=''; updateStats(); return; }
   empty.style.display = 'none';
-  list.innerHTML = positions.map((p,i) => `
+  const total = positions.reduce((s,p) => s + p.qty*p.price, 0);
+  list.innerHTML = positions.map(p => `
     <div class="pos-card">
       <div class="pos-top">
         <div class="pos-asset">${p.asset}</div>
@@ -636,11 +689,11 @@ function loadPositions() {
       </div>
       <div class="pos-details">
         <div class="pos-detail">Quantité<span>${p.qty}</span></div>
-        <div class="pos-detail">Prix d'achat<span>${p.price.toLocaleString('fr-FR')} €</span></div>
+        <div class="pos-detail">Prix d'achat<span>${Number(p.price).toLocaleString('fr-FR')} €</span></div>
         <div class="pos-detail">Total investi<span>${(p.qty*p.price).toLocaleString('fr-FR')} €</span></div>
       </div>
       <div class="pos-actions">
-        <button class="btn-sm btn-danger" onclick="removePosition(${i})"><i class="fas fa-trash"></i> Supprimer</button>
+        <button class="btn-sm btn-danger" onclick="removePosition(${p.id})"><i class="fas fa-trash"></i> Supprimer</button>
       </div>
     </div>`).join('');
   updateStats();
@@ -653,7 +706,7 @@ function updateStats() {
   document.getElementById('total-pnl').className = 'stat-val';
 }
 
-function addPosition() {
+async function addPosition() {
   const type = document.getElementById('pos-type').value;
   const asset = document.getElementById('pos-asset').value.trim().toUpperCase();
   const qty = parseFloat(document.getElementById('pos-qty').value);
@@ -661,20 +714,23 @@ function addPosition() {
   if (!asset) return toast('Entrez le nom de l\'actif', 'red');
   if (!qty || qty<=0) return toast('Entrez une quantité valide', 'red');
   if (!price || price<=0) return toast('Entrez un prix d\'achat valide', 'red');
-  positions.push({type, asset, qty, price});
-  localStorage.setItem('pa_positions', JSON.stringify(positions));
+  const r = await fetch(`${API}/api/portfolio`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+    body: JSON.stringify({type, asset, qty, price})
+  });
+  if (!r.ok) return toast('Erreur lors de l\'ajout', 'red');
   document.getElementById('pos-asset').value='';
   document.getElementById('pos-qty').value='';
   document.getElementById('pos-price').value='';
-  loadPositions();
   toast('Ajouté à votre portefeuille !');
+  loadPositions();
 }
 
-function removePosition(i) {
-  positions.splice(i,1);
-  localStorage.setItem('pa_positions', JSON.stringify(positions));
-  loadPositions();
+async function removePosition(id) {
+  await fetch(`${API}/api/portfolio/${id}`, {method:'DELETE',headers:{'Authorization':'Bearer '+TOKEN}});
   toast('Supprimé');
+  loadPositions();
 }
 
 // ── IA CHAT ───────────────────────────────────────────────────────────────

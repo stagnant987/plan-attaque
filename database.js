@@ -60,6 +60,16 @@ async function initDB() {
       type TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT NOW()
     );
+
+    CREATE TABLE IF NOT EXISTS portfolio (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      type TEXT NOT NULL,
+      asset TEXT NOT NULL,
+      qty REAL NOT NULL,
+      price REAL NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
   `);
 }
 
