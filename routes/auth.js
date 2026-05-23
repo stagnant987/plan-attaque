@@ -3,6 +3,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { pool } = require('../database');
 const authMw = require('../middleware/auth');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS }
+});
 
 const SECRET = process.env.JWT_SECRET || 'plan_attaque_secret';
 const sign = (id) => jwt.sign({ id }, SECRET, { expiresIn: '7d' });
@@ -76,7 +82,25 @@ router.post('/forgot-password', async (req, res) => {
   if (!rows[0]) return res.status(404).json({ error: 'Aucun compte avec cet email' });
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   resetCodes.set(email, { code, expires: Date.now() + 15 * 60 * 1000 });
-  res.json({ code, message: 'Code généré (valable 15 minutes)' });
+  try {
+    await transporter.sendMail({
+      from: `"Plan d'Attaque" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: '🔑 Votre code de récupération — Plan d\'Attaque',
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:500px;margin:0 auto;background:#0a0a12;color:#f0ecff;padding:40px;border-radius:16px">
+          <h2 style="color:#a855f7;text-align:center">🎯 Plan d'Attaque</h2>
+          <p style="font-size:16px;margin:20px 0">Voici votre code de récupération :</p>
+          <div style="background:#1a1630;border:2px solid #a855f7;border-radius:12px;padding:24px;text-align:center;margin:24px 0">
+            <span style="font-size:36px;font-weight:900;letter-spacing:8px;color:#a855f7">${code}</span>
+          </div>
+          <p style="color:#9985c8;font-size:14px">Ce code est valable <strong>15 minutes</strong>.<br>Si vous n'avez pas demandé de réinitialisation, ignorez cet email.</p>
+        </div>`
+    });
+  } catch(e) {
+    console.error('Email error:', e.message);
+  }
+  res.json({ message: 'Code envoyé par email (valable 15 minutes)' });
 });
 
 router.post('/reset-password', async (req, res) => {
