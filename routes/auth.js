@@ -7,6 +7,8 @@ const authMw = require('../middleware/auth');
 const SECRET = process.env.JWT_SECRET || 'plan_attaque_secret';
 const sign = (id) => jwt.sign({ id }, SECRET, { expiresIn: '7d' });
 
+const resetCodes = new Map(); // email -> { code, expires }
+
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) return res.status(400).json({ error: 'Champs manquants' });
@@ -65,6 +67,29 @@ router.put('/password', authMw, async (req, res) => {
   if (newPass.length < 6) return res.status(400).json({ error: 'Minimum 6 caractères' });
   await pool.query('UPDATE users SET password = $1 WHERE id = $2', [bcrypt.hashSync(newPass, 10), req.user.id]);
   res.json({ status: 'ok' });
+});
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email manquant' });
+  const { rows } = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+  if (!rows[0]) return res.status(404).json({ error: 'Aucun compte avec cet email' });
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  resetCodes.set(email, { code, expires: Date.now() + 15 * 60 * 1000 });
+  res.json({ code, message: 'Code généré (valable 15 minutes)' });
+});
+
+router.post('/reset-password', async (req, res) => {
+  const { email, code, newPassword } = req.body;
+  if (!email || !code || !newPassword) return res.status(400).json({ error: 'Champs manquants' });
+  if (newPassword.length < 6) return res.status(400).json({ error: 'Mot de passe trop court (min 6)' });
+  const entry = resetCodes.get(email);
+  if (!entry) return res.status(400).json({ error: 'Aucun code demandé pour cet email' });
+  if (Date.now() > entry.expires) { resetCodes.delete(email); return res.status(400).json({ error: 'Code expiré, recommencez' }); }
+  if (entry.code !== code) return res.status(400).json({ error: 'Code incorrect' });
+  await pool.query('UPDATE users SET password = $1 WHERE email = $2', [bcrypt.hashSync(newPassword, 10), email]);
+  resetCodes.delete(email);
+  res.json({ status: 'ok', message: 'Mot de passe réinitialisé' });
 });
 
 module.exports = router;

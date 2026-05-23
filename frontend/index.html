@@ -196,6 +196,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
         <button class="eye-btn" type="button" onclick="togglePass('login-pass',this)"><i class="fas fa-eye"></i></button>
       </div>
       <button class="btn-main" onclick="login()">Se connecter →</button>
+      <p style="text-align:center;margin-top:14px"><button onclick="showForgot()" style="background:none;border:none;color:var(--purple);font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600">🔓 Mot de passe oublié ?</button></p>
     </div>
     <div id="register-form" style="display:none">
       <input class="inp" id="reg-user" type="text" placeholder="Votre prénom ou pseudo">
@@ -206,6 +207,39 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
       </div>
       <button class="btn-main" onclick="register()">Créer mon compte →</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL MOT DE PASSE OUBLIÉ -->
+<div id="forgot-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center;padding:20px">
+  <div class="auth-box" style="max-height:90vh;overflow-y:auto">
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;text-align:center">🔓 Récupérer mon mot de passe</h2>
+    <p style="color:var(--text2);font-size:14px;text-align:center;margin-bottom:24px">Entrez votre email, un code de récupération sera généré</p>
+
+    <!-- Étape 1 -->
+    <div id="forgot-step1">
+      <div class="lbl">Votre email</div>
+      <input class="inp" id="forgot-email" type="email" placeholder="votre@email.com">
+      <button class="btn-main" onclick="requestCode()">Obtenir mon code →</button>
+    </div>
+
+    <!-- Étape 2 -->
+    <div id="forgot-step2" style="display:none">
+      <div class="conseil-box" style="margin-bottom:16px">
+        <i class="fas fa-key"></i> Votre code de récupération : <strong id="forgot-code-display" style="font-size:22px;letter-spacing:4px;color:var(--purple)"></strong>
+        <br><small style="color:var(--text2)">Valable 15 minutes</small>
+      </div>
+      <div class="lbl">Entrez le code</div>
+      <input class="inp" id="forgot-code-input" type="text" placeholder="123456" maxlength="6">
+      <div class="lbl">Nouveau mot de passe</div>
+      <div class="pass-wrap">
+        <input class="inp" id="forgot-new-pass" type="password" placeholder="Minimum 6 caractères">
+        <button class="eye-btn" type="button" onclick="togglePass('forgot-new-pass',this)"><i class="fas fa-eye"></i></button>
+      </div>
+      <button class="btn-main" onclick="resetPassword()">Réinitialiser mon mot de passe →</button>
+    </div>
+
+    <button onclick="hideForgot()" style="width:100%;background:none;border:1px solid var(--border);color:var(--text2);padding:12px;border-radius:12px;font-size:15px;cursor:pointer;margin-top:10px;font-family:'Inter',sans-serif">Annuler</button>
   </div>
 </div>
 
@@ -681,6 +715,37 @@ function addMsg(text, role) {
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────────
+function showForgot() {
+  document.getElementById('forgot-modal').style.display = 'flex';
+  document.getElementById('forgot-step1').style.display = 'block';
+  document.getElementById('forgot-step2').style.display = 'none';
+  document.getElementById('forgot-email').value = '';
+}
+function hideForgot() { document.getElementById('forgot-modal').style.display = 'none'; }
+
+async function requestCode() {
+  const email = document.getElementById('forgot-email').value.trim();
+  if (!email) return toast('Entrez votre email', 'red');
+  const r = await fetch(`${API}/api/auth/forgot-password`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+  const d = await r.json();
+  if (!r.ok) return toast(d.error, 'red');
+  document.getElementById('forgot-code-display').textContent = d.code;
+  document.getElementById('forgot-step1').style.display = 'none';
+  document.getElementById('forgot-step2').style.display = 'block';
+}
+
+async function resetPassword() {
+  const email = document.getElementById('forgot-email').value.trim();
+  const code = document.getElementById('forgot-code-input').value.trim();
+  const newPassword = document.getElementById('forgot-new-pass').value;
+  if (!code || !newPassword) return toast('Remplissez tous les champs', 'red');
+  const r = await fetch(`${API}/api/auth/reset-password`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,code,newPassword})});
+  const d = await r.json();
+  if (!r.ok) return toast(d.error, 'red');
+  toast('Mot de passe réinitialisé ! Connectez-vous.');
+  hideForgot();
+}
+
 function togglePass(id, btn) {
   const inp = document.getElementById(id);
   const isPass = inp.type === 'password';
