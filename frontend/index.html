@@ -728,7 +728,7 @@ async function requestCode() {
   const r = await fetch(`${API}/api/auth/forgot-password`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
   const d = await r.json();
   if (!r.ok) return toast(d.error, 'red');
-  document.getElementById('forgot-code-display').textContent = d.code;
+  toast('Code envoyé ! Vérifiez votre boîte mail.', 'green');
   document.getElementById('forgot-step1').style.display = 'none';
   document.getElementById('forgot-step2').style.display = 'block';
 }
